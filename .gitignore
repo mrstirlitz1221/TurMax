@@ -1,0 +1,10 @@
+# .NET
+bin/
+obj/
+*.user
+.vs/
+backend/TurMax.Api/wwwroot/uploads/*
+!backend/TurMax.Api/wwwroot/uploads/.gitkeep
+# Node / Next.js — см. frontend/.gitignore
+node_modules/
+.next/
