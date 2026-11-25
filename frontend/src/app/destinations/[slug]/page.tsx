@@ -11,12 +11,15 @@ import { ArticleCard, PoiCard, TourCard } from "@/components/cards";
 import { SectionHeader } from "@/components/ui";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { PlaceMap } from "@/components/map/PlaceMap";
+import { getI18n } from "@/i18n/server";
+import { UntranslatedNote } from "@/components/UntranslatedNote";
 
 type P = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: P): Promise<Metadata> {
+  const { L } = await getI18n();
   const d = await apiGet<Destination>(`/destinations/${(await params).slug}`);
-  if (!d) return { title: "Направление не найдено" };
+  if (!d) return { title: L("Направление не найдено") };
   return {
     title: d.name,
     description: d.summary,
@@ -25,6 +28,7 @@ export async function generateMetadata({ params }: P): Promise<Metadata> {
 }
 
 export default async function DestinationPage({ params }: P) {
+  const { L } = await getI18n();
   const d = await apiGet<Destination>(`/destinations/${(await params).slug}`);
   if (!d) notFound();
 
@@ -45,14 +49,14 @@ export default async function DestinationPage({ params }: P) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <PageHero
         photo={d.photos[0]}
-        crumbs={[{ href: "/", label: "Главная" }, { href: "/destinations", label: "Направления" }, { label: d.name }]}
+        crumbs={[{ href: "/", label: L("Главная") }, { href: "/destinations", label: L("Направления") }, { label: d.name }]}
         eyebrow={d.region.name}
         title={d.name}
         subtitle={d.tagline}
       >
         <div className="flex flex-wrap items-center gap-3">
           <Link href={`/tours?destination=${d.slug}`} className="btn-light">
-            <Route size={16} /> Маршруты сюда
+            <Route size={16} /> {L("Маршруты сюда")}
           </Link>
           <FavoriteButton destinationId={d.id} light />
         </div>
@@ -61,30 +65,30 @@ export default async function DestinationPage({ params }: P) {
       <section className="container-x grid gap-14 py-16 md:py-24 lg:grid-cols-[1fr_360px]">
         <div>
           <p className="font-display text-[26px] leading-snug text-forest sm:text-[30px]">{d.summary}</p>
-          <RichText text={d.description} className="mt-10" />
+          <div className="mt-10"><UntranslatedNote show={d.untranslated} /><RichText text={d.description} /></div>
         </div>
         <aside className="space-y-8 lg:sticky lg:top-[calc(var(--header-h)+24px)] lg:self-start">
           <div className="card divide-y divide-graphite/8">
             <div className="flex gap-3 p-5">
               <MapPin size={19} className="mt-0.5 shrink-0 text-turquoise" aria-hidden />
               <div>
-                <p className="text-[12px] font-semibold tracking-wider text-stone uppercase">Расположение</p>
+                <p className="text-[12px] font-semibold tracking-wider text-stone uppercase">{L("Расположение")}</p>
                 <p className="mt-1 text-[15px]">{d.region.name}</p>
-                <p className="text-[13px] text-stone">{d.latitude.toFixed(4)}° с. ш., {d.longitude.toFixed(4)}° в. д.</p>
+                <p className="text-[13px] text-stone">{d.latitude.toFixed(4)}{L("° с. ш.,")} {d.longitude.toFixed(4)}{L("° в. д.")}</p>
               </div>
             </div>
             {d.bestTime && (
               <div className="flex gap-3 p-5">
                 <CalendarDays size={19} className="mt-0.5 shrink-0 text-turquoise" aria-hidden />
                 <div>
-                  <p className="text-[12px] font-semibold tracking-wider text-stone uppercase">Лучшее время</p>
+                  <p className="text-[12px] font-semibold tracking-wider text-stone uppercase">{L("Лучшее время")}</p>
                   <p className="mt-1 text-[15px]">{d.bestTime}</p>
                 </div>
               </div>
             )}
             {d.categories.length > 0 && (
               <div className="p-5">
-                <p className="mb-3 text-[12px] font-semibold tracking-wider text-stone uppercase">Категории</p>
+                <p className="mb-3 text-[12px] font-semibold tracking-wider text-stone uppercase">{L("Категории")}</p>
                 <div className="flex flex-wrap gap-2">
                   {d.categories.map((c) => (
                     <Link key={c.slug} href={`/categories/${c.slug}`} className="chip hover:border-forest hover:text-forest">
@@ -97,7 +101,7 @@ export default async function DestinationPage({ params }: P) {
           </div>
           {d.highlights.length > 0 && (
             <div>
-              <p className="eyebrow mb-4 text-turquoise">Особенности</p>
+              <p className="eyebrow mb-4 text-turquoise">{L("Особенности")}</p>
               <ul className="space-y-3">
                 {d.highlights.map((h) => (
                   <li key={h} className="flex gap-3 border-b border-graphite/8 pb-3 text-[15px]">
@@ -112,14 +116,14 @@ export default async function DestinationPage({ params }: P) {
 
       {d.photos.length > 1 && (
         <section className="container-x pb-20">
-          <h2 className="h-display mb-8 text-[32px] text-forest sm:text-[40px]">Галерея</h2>
+          <h2 className="h-display mb-8 text-[32px] text-forest sm:text-[40px]">{L("Галерея")}</h2>
           <Gallery photos={d.photos} title={d.name} />
         </section>
       )}
 
       {d.attractions.length > 0 && (
         <section className="container-x pb-20">
-          <SectionHeader eyebrow="Что посмотреть" title={`Достопримечательности: ${d.name}`} />
+          <SectionHeader eyebrow={L("Что посмотреть")} title={L("Достопримечательности: {name}", { name: d.name })} />
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {d.attractions.map((p) => (
               <PoiCard key={p.id} p={p} />
@@ -131,8 +135,8 @@ export default async function DestinationPage({ params }: P) {
       <section className="bg-sand py-20">
         <div className="container-x grid gap-10 lg:grid-cols-[1fr_1.6fr]">
           <div>
-            <p className="eyebrow mb-3 text-turquoise">На карте</p>
-            <h2 className="h-display text-[32px] text-forest sm:text-[42px]">Интересные места поблизости</h2>
+            <p className="eyebrow mb-3 text-turquoise">{L("На карте")}</p>
+            <h2 className="h-display text-[32px] text-forest sm:text-[42px]">{L("Интересные места поблизости")}</h2>
             <ul className="mt-8 space-y-3">
               {d.nearby.map((n) => (
                 <li key={n.id}>
@@ -142,7 +146,7 @@ export default async function DestinationPage({ params }: P) {
                   </Link>
                 </li>
               ))}
-              {d.nearby.length === 0 && <li className="text-stone">Других мест поблизости в каталоге пока нет.</li>}
+              {d.nearby.length === 0 && <li className="text-stone">{L("Других мест поблизости в каталоге пока нет.")}</li>}
             </ul>
           </div>
           <div className="h-[420px] overflow-hidden rounded-sm border border-forest/10">
@@ -153,7 +157,7 @@ export default async function DestinationPage({ params }: P) {
 
       {d.tours.length > 0 && (
         <section className="container-x py-20">
-          <SectionHeader eyebrow="Связанные маршруты" title="Туры через это направление" href={`/tours?destination=${d.slug}`} linkLabel="Все маршруты" />
+          <SectionHeader eyebrow={L("Связанные маршруты")} title={L("Туры через это направление")} href={`/tours?destination=${d.slug}`} linkLabel={L("Все маршруты")} />
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {d.tours.map((t) => (
               <TourCard key={t.id} t={t} />
@@ -164,7 +168,7 @@ export default async function DestinationPage({ params }: P) {
 
       {d.articles.length > 0 && (
         <section className="container-x pb-24">
-          <SectionHeader eyebrow="Журнал" title="Почитать перед поездкой" />
+          <SectionHeader eyebrow={L("Журнал")} title={L("Почитать перед поездкой")} />
           <div className="grid gap-10 md:grid-cols-3">
             {d.articles.map((a) => (
               <ArticleCard key={a.id} a={a} />

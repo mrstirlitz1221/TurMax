@@ -1,7 +1,11 @@
+"use client";
+
 import Image, { type ImageProps } from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, ChevronRight, ImageOff, Star } from "lucide-react";
 import type { Photo } from "@/lib/types";
+import { SplitTitle } from "@/components/Reveal";
+import { useI18n } from "@/i18n/client";
 
 /** Фото из БД с запасным фоном, если изображения нет. */
 export function Img({ photo, alt, className = "", ...rest }: { photo?: Photo | null; alt?: string } & Omit<ImageProps, "src" | "alt">) {
@@ -16,8 +20,9 @@ export function Img({ photo, alt, className = "", ...rest }: { photo?: Photo | n
 
 /** Подпись автора фотографии и лицензии (требование лицензий CC). */
 export function PhotoCredit({ photo, className = "" }: { photo?: Photo | null; className?: string }) {
+  const { L } = useI18n();
   if (!photo || (!photo.author && !photo.sourceUrl)) return null;
-  const text = ["Фото", photo.author, photo.license].filter(Boolean).join(" · ");
+  const text = [L("Фото"), photo.author, photo.license].filter(Boolean).join(" · ");
   return photo.sourceUrl ? (
     <a href={photo.sourceUrl} target="_blank" rel="noreferrer" className={`text-[11px] opacity-70 hover:opacity-100 ${className}`}>
       {text} — Wikimedia Commons
@@ -28,18 +33,19 @@ export function PhotoCredit({ photo, className = "" }: { photo?: Photo | null; c
 }
 
 export function SectionHeader({
-  eyebrow, title, text, href, linkLabel = "Смотреть все", light = false,
+  eyebrow, title, text, href, linkLabel, light = false,
 }: { eyebrow?: string; title: string; text?: string; href?: string; linkLabel?: string; light?: boolean }) {
+  const { L } = useI18n();
   return (
     <div className="mb-10 flex flex-col gap-5 md:mb-14 md:flex-row md:items-end md:justify-between">
       <div className="max-w-2xl">
         {eyebrow && <p className={`eyebrow mb-3 ${light ? "text-sky" : "text-turquoise"}`}>{eyebrow}</p>}
-        <h2 className={`h-display text-[34px] sm:text-[44px] lg:text-[52px] ${light ? "text-white" : "text-forest"}`}>{title}</h2>
+        <SplitTitle text={title} className={`h-display text-[34px] sm:text-[44px] lg:text-[52px] ${light ? "text-white" : "text-forest"}`} />
         {text && <p className={`mt-4 text-[16.5px] leading-relaxed ${light ? "text-white/70" : "text-stone"}`}>{text}</p>}
       </div>
       {href && (
         <Link href={href} className={`link-underline shrink-0 text-[14px] ${light ? "text-white" : "text-forest"}`}>
-          {linkLabel} <ArrowUpRight size={16} />
+          {linkLabel ?? L("Смотреть все")} <ArrowUpRight size={16} />
         </Link>
       )}
     </div>
@@ -47,8 +53,9 @@ export function SectionHeader({
 }
 
 export function Breadcrumbs({ items, light = false }: { items: { href?: string; label: string }[]; light?: boolean }) {
+  const { L } = useI18n();
   return (
-    <nav aria-label="Навигационная цепочка" className={`text-[13px] ${light ? "text-white/75" : "text-stone"}`}>
+    <nav aria-label={L("Навигационная цепочка")} className={`text-[13px] ${light ? "text-white/75" : "text-stone"}`}>
       <ol className="flex flex-wrap items-center gap-1">
         {items.map((it, i) => (
           <li key={i} className="flex items-center gap-1">
@@ -68,7 +75,8 @@ export function Breadcrumbs({ items, light = false }: { items: { href?: string; 
 }
 
 export function Rating({ value, count, light = false }: { value: number; count: number; light?: boolean }) {
-  if (count === 0) return <span className={`text-[12.5px] ${light ? "text-white/70" : "text-stone"}`}>Пока без отзывов</span>;
+  const { L } = useI18n();
+  if (count === 0) return <span className={`text-[12.5px] ${light ? "text-white/70" : "text-stone"}`}>{L("Пока без отзывов")}</span>;
   return (
     <span className={`inline-flex items-center gap-1 text-[13px] font-semibold ${light ? "text-white" : "text-graphite"}`}>
       <Star size={14} className="fill-[#e3a83b] text-[#e3a83b]" aria-hidden />
@@ -100,9 +108,10 @@ export function EmptyState({ title, text, action }: { title: string; text?: stri
 }
 
 export function DemoNote({ className = "" }: { className?: string }) {
+  const { L } = useI18n();
   return (
     <p className={`text-[12px] leading-snug text-stone ${className}`}>
-      Цены и тарифы демонстрационные — итоговую стоимость подтверждает оператор.
+      {L("Цены и тарифы демонстрационные — итоговую стоимость подтверждает оператор.")}
     </p>
   );
 }

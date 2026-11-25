@@ -19,7 +19,59 @@ public class DbSeeder(AppDbContext db, IPasswordHasher<User> hasher, IConfigurat
     public async Task SeedAsync(CancellationToken ct = default)
     {
         await EnsureAdminAsync(ct);
-        if (await db.Regions.AnyAsync(ct)) return;
+        if (!await db.Regions.AnyAsync(ct)) await SeedContentAsync(ct);
+        await SeedTranslationsAsync(ct);
+    }
+
+    /// <summary>
+    /// Переводы демонстрационного контента на кыргызский и английский (Data/Seed/translations.*.json).
+    /// Добавляются только отсутствующие записи; дальше переводы ведёт администратор.
+    /// </summary>
+    async Task SeedTranslationsAsync(CancellationToken ct)
+    {
+        // Добавляются только отсутствующие переводы — правки администратора не перезаписываются.
+        var existing = (await db.Translations.Select(t => new { t.EntityType, t.EntityId, t.Field, t.Lang }).ToListAsync(ct))
+            .Select(t => (t.EntityType, t.EntityId, t.Field, t.Lang)).ToHashSet();
+        var dir = Path.Combine(env.ContentRootPath, "Data", "Seed");
+        var ids = new Dictionary<string, Dictionary<string, string>>
+        {
+            ["Destination"] = await db.Destinations.ToDictionaryAsync(x => x.Slug, x => x.Id.ToString("D"), ct),
+            ["Poi"] = await db.Pois.ToDictionaryAsync(x => x.Slug, x => x.Id.ToString("D"), ct),
+            ["Tour"] = await db.Tours.ToDictionaryAsync(x => x.Slug, x => x.Id.ToString("D"), ct),
+            ["Article"] = await db.Articles.ToDictionaryAsync(x => x.Slug, x => x.Id.ToString("D"), ct),
+            ["Category"] = await db.Categories.ToDictionaryAsync(x => x.Slug, x => x.Id.ToString(), ct),
+            ["Region"] = await db.Regions.ToDictionaryAsync(x => x.Slug, x => x.Id.ToString(), ct),
+            ["Operator"] = await db.Operators.ToDictionaryAsync(x => x.Slug, x => x.Id.ToString("D"), ct),
+            // Заметки к точкам программы: «адрес-тура:номер-точки» → «id-тура:номер-точки»
+            ["TourPoint"] = (await db.TourPoints.Select(p => new { p.Tour.Slug, p.TourId, p.Order }).ToListAsync(ct))
+                .ToDictionary(p => $"{p.Slug}:{p.Order}", p => $"{p.TourId:D}:{p.Order}"),
+        };
+        var count = 0;
+        foreach (var lang in new[] { "en", "ky" })
+        {
+            var file = Path.Combine(dir, $"translations.{lang}.json");
+            if (!File.Exists(file)) continue;
+            // тип сущности → адрес (slug) → поле → значение
+            var data = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, Dictionary<string, JsonElement>>>>(await File.ReadAllTextAsync(file, ct), Json)!;
+            foreach (var (type, bySlug) in data)
+                foreach (var (slug, fields) in bySlug)
+                {
+                    if (!ids.TryGetValue(type, out var map) || !map.TryGetValue(slug, out var id)) { log.LogWarning("Перевод без сущности: {Type}/{Slug}", type, slug); continue; }
+                    foreach (var (field, value) in fields)
+                    {
+                        var text = value.ValueKind == JsonValueKind.Array ? string.Join('\n', value.EnumerateArray().Select(v => v.GetString())) : value.GetString() ?? "";
+                        if (text.Length == 0 || existing.Contains((type, id, field, lang))) continue;
+                        db.Translations.Add(new Translation { EntityType = type, EntityId = id, Field = field, Lang = lang, Value = text });
+                        count++;
+                    }
+                }
+        }
+        await db.SaveChangesAsync(ct);
+        if (count > 0) log.LogInformation("Загружено переводов контента: {Count}", count);
+    }
+
+    async Task SeedContentAsync(CancellationToken ct)
+    {
 
         var dir = Path.Combine(env.ContentRootPath, "Data", "Seed");
         var seed = JsonSerializer.Deserialize<SeedFile>(await File.ReadAllTextAsync(Path.Combine(dir, "seed.json"), ct), Json)!;

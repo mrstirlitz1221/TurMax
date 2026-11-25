@@ -13,7 +13,7 @@ namespace TurMax.Api.Controllers;
 [ApiController]
 [Route("api/operator")]
 [Authorize(Roles = Roles.Operator)]
-public class OperatorController(AppDbContext db, BookingService bookings, AuditService audit) : ControllerBase
+public class OperatorController(AppDbContext db, BookingService bookings, AuditService audit, TranslationService tr) : ControllerBase
 {
     Guid OpId => User.OperatorId();
 
@@ -219,7 +219,7 @@ public class OperatorController(AppDbContext db, BookingService bookings, AuditS
         var list = await q.Include(b => b.User).Include(b => b.Operator).Include(b => b.Departure).ThenInclude(d => d!.Tour)
             .Include(b => b.Route).Include(b => b.Review).Include(b => b.History).ThenInclude(h => h.ChangedBy)
             .AsSplitQuery().OrderByDescending(b => b.CreatedAt).Take(200).ToListAsync(ct);
-        return list.Select(b => BookingService.ToDto(b, true)).ToList();
+        return await tr.Apply(list.Select(b => BookingService.ToDto(b, true, Langs.Of(HttpContext))), ct);
     }
 
     [HttpGet("bookings/{id:guid}")]
@@ -230,13 +230,13 @@ public class OperatorController(AppDbContext db, BookingService bookings, AuditS
             ? await db.RoutePoints.Where(p => p.RouteId == rid).OrderBy(p => p.Day).ThenBy(p => p.Order)
                 .Select(p => new { p.Day, p.Nights, p.Poi.Name, p.Poi.Slug }).ToListAsync(ct)
             : null;
-        return new { booking = BookingService.ToDto(b, true), routePoints = route };
+        return new { booking = await tr.Apply(BookingService.ToDto(b, true, Langs.Of(HttpContext)), ct), routePoints = route };
     }
 
     /// <summary>Подтверждение, отклонение или изменение цены (PATCH /api/operator/bookings/{id}).</summary>
     [HttpPatch("bookings/{id:guid}")]
     public async Task<BookingDto> Act(Guid id, OperatorBookingAction req, CancellationToken ct) =>
-        BookingService.ToDto(await bookings.OperatorActionAsync(id, OpId, User.UserId(), req, ct), true);
+        await tr.Apply(BookingService.ToDto(await bookings.OperatorActionAsync(id, OpId, User.UserId(), req, ct), true, Langs.Of(HttpContext)), ct);
 
     // ---------- Отзывы ----------
 

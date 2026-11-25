@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api, errorMessage } from "@/lib/api-client";
-import { num, som } from "@/lib/format";
+
 import { Rating } from "@/components/ui";
+import { useI18n } from "@/i18n/client";
 
 type Stats = {
   toursPublished: number; toursTotal: number; views: number; bookingsTotal: number; bookingsNew: number; bookingsConfirmed: number;
@@ -13,22 +14,23 @@ type Stats = {
 
 /** Статистика просмотров и заявок (FR-16). */
 export default function OperatorOverview() {
+  const { L, som, num } = useI18n();
   const [s, setS] = useState<Stats | null>(null);
   const [err, setErr] = useState<string | null>(null);
   useEffect(() => {
     api<Stats>("/operator/stats").then(setS).catch((e) => setErr(errorMessage(e)));
   }, []);
   if (err) return <p className="text-clay">{err}</p>;
-  if (!s) return <p className="text-stone">Загрузка…</p>;
+  if (!s) return <p className="text-stone">{L("Загрузка…")}</p>;
   const max = Math.max(1, ...s.tours.map((t) => t.views));
   return (
     <div className="space-y-12">
       <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-sm bg-graphite/10 md:grid-cols-4">
         {[
-          ["Новые заявки", s.bookingsNew, "/operator/bookings"],
-          ["Подтверждено", s.bookingsConfirmed, null],
-          ["Просмотры туров", num(s.views), null],
-          ["Выручка по заявкам", som(s.revenue), null],
+          [L("Новые заявки"), s.bookingsNew, "/operator/bookings"],
+          [L("Подтверждено"), s.bookingsConfirmed, null],
+          [L("Просмотры туров"), num(s.views), null],
+          [L("Выручка по заявкам"), som(s.revenue), null],
         ].map(([k, v, href]) => (
           <div key={k as string} className="bg-white p-5">
             <dt className="text-[12.5px] text-stone">{k}</dt>
@@ -38,17 +40,17 @@ export default function OperatorOverview() {
       </dl>
       <div className="grid gap-10 lg:grid-cols-[1fr_300px]">
         <div>
-          <h2 className="mb-4 font-display text-2xl text-forest">Туры: просмотры и заявки</h2>
+          <h2 className="mb-4 font-display text-2xl text-forest">{L("Туры: просмотры и заявки")}</h2>
           {s.tours.length === 0 ? (
-            <p className="text-stone">Туров пока нет. <Link href="/operator/tours/new" className="font-semibold text-forest underline">Создать тур</Link></p>
+            <p className="text-stone">{L("Туров пока нет.")} <Link href="/operator/tours/new" className="font-semibold text-forest underline">{L("Создать тур")}</Link></p>
           ) : (
             <table className="w-full text-[14px]">
               <thead>
                 <tr className="text-left text-[12px] text-stone uppercase">
-                  <th className="pb-2 font-semibold">Тур</th>
-                  <th className="pb-2 font-semibold">Просмотры</th>
-                  <th className="pb-2 text-right font-semibold">Заявки</th>
-                  <th className="pb-2 text-right font-semibold">Конверсия</th>
+                  <th className="pb-2 font-semibold">{L("Тур")}</th>
+                  <th className="pb-2 font-semibold">{L("Просмотры")}</th>
+                  <th className="pb-2 text-right font-semibold">{L("Заявки")}</th>
+                  <th className="pb-2 text-right font-semibold">{L("Конверсия")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -70,11 +72,11 @@ export default function OperatorOverview() {
           )}
         </div>
         <div className="card h-fit p-5">
-          <p className="text-[12.5px] text-stone">Рейтинг оператора</p>
+          <p className="text-[12.5px] text-stone">{L("Рейтинг оператора")}</p>
           <div className="mt-2"><Rating value={s.rating} count={s.reviewsCount} /></div>
-          <p className="mt-4 text-[12.5px] text-stone">Туров опубликовано</p>
-          <p className="font-display text-2xl text-forest">{s.toursPublished} из {s.toursTotal}</p>
-          <p className="mt-4 text-[12.5px] text-stone">Всего заявок / завершено</p>
+          <p className="mt-4 text-[12.5px] text-stone">{L("Туров опубликовано")}</p>
+          <p className="font-display text-2xl text-forest">{s.toursPublished} {L("из")} {s.toursTotal}</p>
+          <p className="mt-4 text-[12.5px] text-stone">{L("Всего заявок / завершено")}</p>
           <p className="font-display text-2xl text-forest">{s.bookingsTotal} / {s.bookingsCompleted}</p>
         </div>
       </div>

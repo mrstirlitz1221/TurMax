@@ -1,30 +1,15 @@
 import type { BookingStatus, Difficulty, OperatorKind, PoiKind, RoadType, ServiceType, TourStatus, VehicleType, Verification } from "./types";
 
-const money = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 });
-export const som = (v: number) => `${money.format(v)} сом`;
-export const num = (v: number) => money.format(v);
-
+// Подписи перечислений — русские фразы-ключи; переводятся при выводе через L() (см. src/i18n).
 export const MONTHS = ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"];
-const MONTHS_SHORT = ["янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
 
-export function season(from: number, to: number) {
-  if (from === 1 && to === 12) return "Круглый год";
-  return `${MONTHS_SHORT[from - 1]} — ${MONTHS_SHORT[to - 1]}`;
-}
-
-export function date(iso: string, opts: Intl.DateTimeFormatOptions = { day: "numeric", month: "long", year: "numeric" }) {
-  return new Date(iso.length === 10 ? `${iso}T00:00:00` : iso).toLocaleDateString("ru-RU", opts);
-}
-export const dateTime = (iso: string) =>
-  new Date(iso).toLocaleString("ru-RU", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
-
+/** Русская форма слова для числа (используется только там, где нужна сама форма без перевода). */
 export function plural(n: number, one: string, few: string, many: string) {
   const m10 = n % 10, m100 = n % 100;
   if (m10 === 1 && m100 !== 11) return one;
   if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
   return many;
 }
-export const days = (n: number) => `${n} ${plural(n, "день", "дня", "дней")}`;
 
 export const DIFFICULTY: Record<Difficulty, string> = { Easy: "Лёгкий", Moderate: "Средний", Hard: "Сложный", Expert: "Экспертный" };
 export const DIFFICULTY_LEVEL: Record<Difficulty, number> = { Easy: 1, Moderate: 2, Hard: 3, Expert: 4 };

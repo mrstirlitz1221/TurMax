@@ -6,8 +6,10 @@ import { api } from "@/lib/api-client";
 import { useAuth } from "@/components/auth/AuthProvider";
 import type { Notification } from "@/lib/types";
 import { CabinetShell } from "./shared";
+import { useI18n } from "@/i18n/client";
 
 export function AccountShell({ children }: { children: React.ReactNode }) {
+  const { L } = useI18n();
   const { user } = useAuth();
   const pathname = usePathname();
   const [unread, setUnread] = useState(0);
@@ -16,14 +18,14 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
   }, [pathname]);
   return (
     <CabinetShell
-      title="Личный кабинет"
+      title={L("Личный кабинет")}
       subtitle={user ? `${user.fullName} · ${user.email}` : undefined}
       tabs={[
-        { href: "/account", label: "Заявки" },
-        { href: "/planner", label: "Мои маршруты" },
-        { href: "/account/favorites", label: "Избранное" },
-        { href: "/account/notifications", label: "Уведомления", badge: unread },
-        { href: "/account/profile", label: "Профиль" },
+        { href: "/account", label: L("Заявки") },
+        { href: "/planner", label: L("Мои маршруты") },
+        { href: "/account/favorites", label: L("Избранное") },
+        { href: "/account/notifications", label: L("Уведомления"), badge: unread },
+        { href: "/account/profile", label: L("Профиль") },
       ]}
     >
       {children}

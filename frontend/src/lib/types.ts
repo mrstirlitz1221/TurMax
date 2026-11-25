@@ -38,13 +38,13 @@ export type ArticleCard = { id: string; slug: string; title: string; lead: strin
 export type Destination = {
   id: string; slug: string; name: string; tagline: string; summary: string; description: string; region: Region;
   latitude: number; longitude: number; bestTime?: string | null; highlights: string[]; categories: Category[];
-  photos: Photo[]; attractions: PoiCard[]; nearby: PoiCard[]; tours: TourCard[]; articles: ArticleCard[];
+  photos: Photo[]; attractions: PoiCard[]; nearby: PoiCard[]; tours: TourCard[]; articles: ArticleCard[]; untranslated?: boolean;
 };
 export type Poi = {
   id: string; slug: string; name: string; kind: PoiKind; summary: string; description: string; region: Region;
   latitude: number; longitude: number; altitudeM?: number | null; roadType: RoadType; entryFee?: number | null;
   lodgingPrice?: number | null; needsPermit: boolean; season?: string | null; photos: Photo[];
-  destination?: DestinationCard | null; nearby: PoiCard[]; tours: TourCard[];
+  destination?: DestinationCard | null; nearby: PoiCard[]; tours: TourCard[]; untranslated?: boolean;
 };
 export type MapPoint = { id: string; slug: string; name: string; type: "destination" | "poi"; kind?: PoiKind | null; summary: string; latitude: number; longitude: number; imageUrl?: string | null; url: string };
 
@@ -57,16 +57,16 @@ export type Tour = {
   days: number; difficulty: Difficulty; seasonFromMonth: number; seasonToMonth: number; maxAltitudeM?: number | null;
   distanceKm?: number | null; priceFrom: number; guideLanguages: string[]; recommendations: string[]; includes: string[];
   needsPermit: boolean; rating: number; reviewsCount: number; photos: Photo[]; points: TourPoint[]; departures: Departure[];
-  operator: OperatorPublic; reviews: Review[]; status: TourStatus;
+  operator: OperatorPublic; reviews: Review[]; status: TourStatus; untranslated?: boolean;
 };
 
 export type Article = {
   id: string; slug: string; title: string; lead: string; body: string; topic: string; authorName: string; readingMinutes: number;
-  publishedAt: string; photos: Photo[]; destination?: DestinationCard | null; related: ArticleCard[];
+  publishedAt: string; photos: Photo[]; destination?: DestinationCard | null; related: ArticleCard[]; untranslated?: boolean;
 };
 export type SearchResult = { destinations: DestinationCard[]; attractions: PoiCard[]; tours: TourCard[]; articles: ArticleCard[] };
 
-export type User = { id: string; email: string; fullName: string; phone?: string | null; role: Role; operatorId?: string | null; operatorName?: string | null; operatorStatus?: Verification | null };
+export type User = { id: string; email: string; fullName: string; phone?: string | null; role: Role; operatorId?: string | null; operatorName?: string | null; operatorStatus?: Verification | null; language?: string };
 export type AuthResponse = { accessToken: string; expiresAt: string; user: User };
 
 export type RoutePoint = { id: string; poiId: string; poiSlug: string; name: string; kind: PoiKind; day: number; order: number; nights: number; latitude: number; longitude: number; roadType: RoadType; entryFee?: number | null; lodgingPrice?: number | null; needsPermit: boolean };

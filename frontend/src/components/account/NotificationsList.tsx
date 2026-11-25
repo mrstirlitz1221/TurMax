@@ -6,17 +6,19 @@ import { Bell } from "lucide-react";
 import { api, errorMessage } from "@/lib/api-client";
 import type { Notification } from "@/lib/types";
 import { EmptyState } from "@/components/ui";
-import { dateTime } from "@/lib/format";
+import { useI18n } from "@/i18n/client";
+
 
 export function NotificationsList() {
+  const { L, dateTime } = useI18n();
   const [items, setItems] = useState<Notification[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
   useEffect(() => {
     api<Notification[]>("/notifications").then(setItems).catch((e) => setErr(errorMessage(e)));
   }, []);
   if (err) return <p className="text-clay">{err}</p>;
-  if (!items) return <p className="text-stone">Загрузка…</p>;
-  if (items.length === 0) return <EmptyState title="Уведомлений нет" text="Здесь появятся изменения статусов заявок." />;
+  if (!items) return <p className="text-stone">{L("Загрузка…")}</p>;
+  if (items.length === 0) return <EmptyState title={L("Уведомлений нет")} text={L("Здесь появятся изменения статусов заявок.")} />;
   const unread = items.some((n) => !n.isRead);
   return (
     <div>
@@ -28,7 +30,7 @@ export function NotificationsList() {
           }}
           className="btn-outline mb-5 !py-2"
         >
-          Отметить все как прочитанные
+          {L("Отметить все как прочитанные")}
         </button>
       )}
       <ul className="space-y-2">
@@ -40,7 +42,7 @@ export function NotificationsList() {
               <p className="text-[14px] text-graphite/85">{n.body}</p>
               <p className="mt-1 text-[12px] text-stone">{dateTime(n.createdAt)}</p>
             </div>
-            {n.link && <Link href={n.link} className="shrink-0 self-center text-[13px] font-semibold text-turquoise hover:underline">Открыть</Link>}
+            {n.link && <Link href={n.link} className="shrink-0 self-center text-[13px] font-semibold text-turquoise hover:underline">{L("Открыть")}</Link>}
           </li>
         ))}
       </ul>

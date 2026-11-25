@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { Menu, Search, UserRound, X, ArrowRight, LogOut } from "lucide-react";
 import { homeFor, useAuth } from "@/components/auth/AuthProvider";
 import { Logo } from "./Logo";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useI18n } from "@/i18n/client";
 
 const NAV = [
   { href: "/destinations", label: "Направления" },
@@ -19,6 +21,7 @@ const NAV = [
 const HERO = [/^\/$/, /^\/destinations\/[^/]+$/, /^\/attractions\/[^/]+$/, /^\/tours\/[^/]+$/, /^\/journal\/[^/]+$/, /^\/categories\/[^/]+$/, /^\/categories$/];
 
 export function Header() {
+  const { L } = useI18n();
   const pathname = usePathname();
   const router = useRouter();
   const { user, ready, logout } = useAuth();
@@ -68,26 +71,29 @@ export function Header() {
         }`}
       >
         <div className={`container-x flex h-[var(--header-h)] items-center gap-6 ${tone}`}>
-          <Link href="/" aria-label="TurMax — на главную" className="shrink-0">
+          <Link href="/" aria-label={L("TurMax — на главную")} className="shrink-0">
             <Logo light={overHero} />
           </Link>
 
-          <nav aria-label="Основная навигация" className="ml-6 hidden flex-1 items-center gap-7 lg:flex">
+          <nav aria-label={L("Основная навигация")} className="ml-6 hidden flex-1 items-center gap-7 lg:flex">
             {NAV.map((n) => (
               <Link
                 key={n.href}
                 href={n.href}
                 className={`link-underline text-[14px] ${pathname.startsWith(n.href) ? "after:scale-x-100" : ""}`}
               >
-                {n.label}
+                {L(n.label)}
               </Link>
             ))}
           </nav>
 
           <div className="ml-auto flex items-center gap-1.5 sm:gap-3">
+            <div className="hidden sm:block">
+              <LanguageSwitcher light={overHero} />
+            </div>
             <button
               type="button"
-              aria-label="Поиск"
+              aria-label={L("Поиск")}
               onClick={() => setSearchOpen(true)}
               className="grid h-10 w-10 place-items-center rounded-sm transition hover:bg-white/15"
             >
@@ -97,21 +103,21 @@ export function Header() {
               href="/planner"
               className={`hidden md:inline-flex ${overHero ? "btn-ghost-light" : "btn-primary"} !px-4 !py-2.5`}
             >
-              Спланировать поездку
+              {L("Спланировать поездку")}
             </Link>
             {ready && (
               <Link
                 href={user ? homeFor(user) : "/login"}
-                aria-label={user ? "Личный кабинет" : "Войти"}
+                aria-label={user ? L("Личный кабинет") : L("Войти")}
                 className="hidden h-10 items-center gap-2 rounded-sm px-2 text-[14px] font-semibold transition hover:bg-white/15 sm:inline-flex"
               >
                 <UserRound size={19} />
-                <span className="hidden xl:inline">{user ? user.fullName.split(" ")[0] : "Войти"}</span>
+                <span className="hidden xl:inline">{user ? user.fullName.split(" ")[0] : L("Войти")}</span>
               </Link>
             )}
             <button
               type="button"
-              aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"}
+              aria-label={menuOpen ? L("Закрыть меню") : L("Открыть меню")}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((v) => !v)}
               className="grid h-10 w-10 place-items-center rounded-sm transition hover:bg-white/15 lg:hidden"
@@ -129,31 +135,32 @@ export function Header() {
         }`}
       >
         <div className="container-x flex h-full flex-col pt-[calc(var(--header-h)+24px)] pb-10">
-          <nav aria-label="Мобильная навигация" className="flex flex-col">
-            {[...NAV, { href: "/planner", label: "Конструктор маршрута" }].map((n, i) => (
+          <nav aria-label={L("Мобильная навигация")} className="flex flex-col">
+            {[...NAV, { href: "/planner", label: L("Конструктор маршрута") }].map((n, i) => (
               <Link
                 key={n.href}
                 href={n.href}
                 className="flex items-center justify-between border-b border-white/10 py-4 font-display text-[28px]"
                 style={{ transitionDelay: `${i * 40}ms` }}
               >
-                {n.label}
+                {L(n.label)}
                 <ArrowRight size={20} className="text-turquoise-light" />
               </Link>
             ))}
           </nav>
           <div className="mt-auto flex flex-col gap-3">
+            <LanguageSwitcher variant="menu" />
             {user ? (
               <>
-                <Link href={homeFor(user)} className="btn-light">Личный кабинет</Link>
+                <Link href={homeFor(user)} className="btn-light">{L("Личный кабинет")}</Link>
                 <button onClick={() => logout()} className="btn-ghost-light">
-                  <LogOut size={16} /> Выйти
+                  <LogOut size={16} /> {L("Выйти")}
                 </button>
               </>
             ) : (
               <>
-                <Link href="/login" className="btn-light">Войти</Link>
-                <Link href="/register" className="btn-ghost-light">Регистрация</Link>
+                <Link href="/login" className="btn-light">{L("Войти")}</Link>
+                <Link href="/register" className="btn-ghost-light">{L("Регистрация")}</Link>
               </>
             )}
           </div>
@@ -164,7 +171,7 @@ export function Header() {
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Поиск по сайту"
+        aria-label={L("Поиск по сайту")}
         className={`fixed inset-0 z-[1100] bg-forest-deep/96 backdrop-blur-sm transition-[opacity,visibility] duration-300 ${
           searchOpen ? "visible opacity-100" : "invisible opacity-0"
         }`}
@@ -173,28 +180,28 @@ export function Header() {
         <div className="container-x pt-28 sm:pt-40">
           <button
             type="button"
-            aria-label="Закрыть поиск"
+            aria-label={L("Закрыть поиск")}
             onClick={() => setSearchOpen(false)}
             className="absolute top-5 right-5 grid h-11 w-11 place-items-center text-white/80 hover:text-white"
           >
             <X size={26} />
           </button>
-          <p className="eyebrow mb-5 text-sky">Поиск по TurMax</p>
+          <p className="eyebrow mb-5 text-sky">{L("Поиск по TurMax")}</p>
           <form onSubmit={submitSearch} className="flex items-end gap-4 border-b border-white/30 pb-3 focus-within:border-turquoise-light">
             <input
               ref={inputRef}
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Озеро, город, маршрут…"
-              aria-label="Поисковый запрос"
+              placeholder={L("Озеро, город, маршрут…")}
+              aria-label={L("Поисковый запрос")}
               className="w-full bg-transparent font-display text-3xl text-white placeholder:text-white/35 focus:outline-none sm:text-5xl"
             />
-            <button type="submit" aria-label="Найти" className="mb-1 text-white/80 hover:text-white">
+            <button type="submit" aria-label={L("Найти")} className="mb-1 text-white/80 hover:text-white">
               <ArrowRight size={32} />
             </button>
           </form>
           <div className="mt-8 flex flex-wrap gap-2">
-            {["Иссык-Куль", "Сон-Куль", "Каракол", "Ош", "трекинг", "юрта"].map((s) => (
+            {[L("Иссык-Куль"), L("Сон-Куль"), L("Каракол"), L("Ош"), L("трекинг"), L("юрта")].map((s) => (
               <button
                 key={s}
                 type="button"

@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { api, errorMessage } from "@/lib/api-client";
-import { dateTime } from "@/lib/format";
+
 import type { Paged } from "@/lib/types";
+import { useI18n } from "@/i18n/client";
 
 type A = { id: number; createdAt: string; userEmail?: string | null; action: string; entityType: string; entityId?: string | null; details?: string | null; ip?: string | null };
 
 /** Журнал действий пользователей и администраторов (FR-20). */
 export default function AuditPage() {
+  const { L, dateTime } = useI18n();
   const [data, setData] = useState<Paged<A> | null>(null);
   const [page, setPage] = useState(1);
   const [filter, setFilter] = useState("");
@@ -19,15 +21,15 @@ export default function AuditPage() {
   const pages = data ? Math.ceil(data.total / data.pageSize) : 1;
   return (
     <div>
-      <div className="mb-5 flex flex-wrap gap-2" role="group" aria-label="Фильтр по действию">
-        {[["", "Все"], ["auth", "Вход и регистрация"], ["booking", "Заявки"], ["tour", "Туры"], ["admin", "Администрирование"], ["service", "Тарифы"]].map(([k, v]) => (
+      <div className="mb-5 flex flex-wrap gap-2" role="group" aria-label={L("Фильтр по действию")}>
+        {[["", L("Все")], ["auth", L("Вход и регистрация")], ["booking", L("Заявки")], ["tour", L("Туры")], ["admin", L("Администрирование")], ["service", L("Тарифы")]].map(([k, v]) => (
           <button key={k} aria-pressed={filter === k} onClick={() => { setFilter(k); setPage(1); }} className={`rounded-xs border px-3 py-1.5 text-[13px] ${filter === k ? "border-forest bg-forest text-white" : "border-graphite/15 bg-white"}`}>{v}</button>
         ))}
       </div>
       {err && <p className="text-clay">{err}</p>}
       <div className="overflow-x-auto">
         <table className="w-full min-w-[760px] text-[13.5px]">
-          <thead><tr className="text-left text-[12px] text-stone uppercase"><th className="pb-2">Время</th><th className="pb-2">Пользователь</th><th className="pb-2">Действие</th><th className="pb-2">Объект</th><th className="pb-2">Детали</th><th className="pb-2">IP</th></tr></thead>
+          <thead><tr className="text-left text-[12px] text-stone uppercase"><th className="pb-2">{L("Время")}</th><th className="pb-2">{L("Пользователь")}</th><th className="pb-2">{L("Действие")}</th><th className="pb-2">{L("Объект")}</th><th className="pb-2">{L("Детали")}</th><th className="pb-2">IP</th></tr></thead>
           <tbody>
             {data?.items.map((a) => (
               <tr key={a.id} className="border-t border-graphite/8 align-top">
@@ -44,9 +46,9 @@ export default function AuditPage() {
       </div>
       {pages > 1 && (
         <div className="mt-6 flex items-center gap-3 text-[14px]">
-          <button disabled={page <= 1} onClick={() => setPage(page - 1)} className="btn-outline !py-1.5">Назад</button>
+          <button disabled={page <= 1} onClick={() => setPage(page - 1)} className="btn-outline !py-1.5">{L("Назад")}</button>
           <span>{page} / {pages}</span>
-          <button disabled={page >= pages} onClick={() => setPage(page + 1)} className="btn-outline !py-1.5">Вперёд</button>
+          <button disabled={page >= pages} onClick={() => setPage(page + 1)} className="btn-outline !py-1.5">{L("Вперёд")}</button>
         </div>
       )}
     </div>

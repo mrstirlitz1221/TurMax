@@ -6,6 +6,12 @@ import type { ApiError, AuthResponse } from "./types";
 // refresh-токен — в HttpOnly-cookie. При 401 один раз пытаемся обновить токен.
 
 let accessToken: string | null = null;
+let apiLocale = "ru";
+
+/** Язык запросов к API (задаётся I18nProvider): сервер переводит контент и сообщения об ошибках. */
+export function setApiLocale(l: string) {
+  apiLocale = l;
+}
 let refreshing: Promise<AuthResponse | null> | null = null;
 type Listener = (auth: AuthResponse | null) => void;
 const listeners = new Set<Listener>();
@@ -26,7 +32,7 @@ export class HttpError extends Error {
 
 export async function refreshSession(): Promise<AuthResponse | null> {
   if (!refreshing) {
-    refreshing = fetch("/api/auth/refresh", { method: "POST", credentials: "same-origin" })
+    refreshing = fetch("/api/auth/refresh", { method: "POST", credentials: "same-origin", headers: { "X-Lang": apiLocale } })
       .then(async (r) => (r.status === 200 ? ((await r.json()) as AuthResponse) : null))
       .catch(() => null)
       .then((auth) => {
@@ -44,7 +50,7 @@ export async function refreshSession(): Promise<AuthResponse | null> {
 type Options = { method?: string; body?: unknown; form?: FormData; retry?: boolean };
 
 export async function api<T = unknown>(path: string, opts: Options = {}): Promise<T> {
-  const headers: Record<string, string> = { Accept: "application/json" };
+  const headers: Record<string, string> = { Accept: "application/json", "X-Lang": apiLocale };
   if (opts.body !== undefined) headers["Content-Type"] = "application/json";
   if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
 

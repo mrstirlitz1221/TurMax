@@ -353,3 +353,17 @@ public class Notification
     public bool IsRead { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
+
+/// <summary>
+/// Справочник переводов контента (НФТ «хранение текстов в справочниках переводов», FR-21):
+/// значение поля Field сущности EntityType/EntityId на языке Lang (en, ky). Русский — исходный язык в самих таблицах.
+/// </summary>
+public class Translation
+{
+    public long Id { get; set; }
+    public string EntityType { get; set; } = "";
+    public string EntityId { get; set; } = "";
+    public string Field { get; set; } = "";
+    public string Lang { get; set; } = "";
+    public string Value { get; set; } = "";
+}

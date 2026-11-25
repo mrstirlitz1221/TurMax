@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { useI18n } from "@/i18n/client";
 
 // Общий кеш идентификаторов избранного: один запрос на страницу вместо запроса на каждую карточку.
 type Ids = { tours: Set<string>; destinations: Set<string> };
@@ -27,6 +28,7 @@ function load(force = false) {
 }
 
 export function FavoriteButton({ tourId, destinationId, light = false }: { tourId?: string; destinationId?: string; light?: boolean }) {
+  const { L } = useI18n();
   const { user } = useAuth();
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -77,8 +79,8 @@ export function FavoriteButton({ tourId, destinationId, light = false }: { tourI
       onClick={toggle}
       disabled={busy}
       aria-pressed={active}
-      aria-label={active ? "Убрать из избранного" : "Добавить в избранное"}
-      title={active ? "В избранном" : "В избранное"}
+      aria-label={active ? L("Убрать из избранного") : L("Добавить в избранное")}
+      title={active ? L("В избранном") : L("В избранное")}
       className={`grid h-10 w-10 place-items-center rounded-full backdrop-blur-md transition duration-300 ${
         light ? "bg-black/25 text-white hover:bg-black/45" : "border border-graphite/15 bg-white text-forest hover:border-forest"
       }`}

@@ -18,12 +18,12 @@ public class BookingService(AppDbContext db, RouteService routes, NotificationSe
         .Include(b => b.Review)
         .Include(b => b.History.OrderBy(h => h.CreatedAt)).ThenInclude(h => h.ChangedBy);
 
-    public static BookingDto ToDto(Booking b, bool forOperator) => new(
-        b.Id, b.Status, b.Departure?.Tour.Title ?? b.Route?.Title ?? "Заявка", b.Departure?.Tour.Slug, b.RouteId, b.DepartureId,
+    public static BookingDto ToDto(Booking b, bool forOperator, string lang = Langs.Ru) => new(
+        b.Id, b.Status, b.Departure?.Tour.Title ?? b.Route?.Title ?? Messages.T("Заявка", lang), b.Departure?.Tour.Slug, b.RouteId, b.DepartureId,
         b.Participants, b.StartDate, b.EndDate, b.PriceCalc, b.PriceFinal, b.Comment, b.OperatorNote, b.Operator.Name,
         forOperator ? b.User.FullName : null, forOperator ? b.User.Email : null, b.ContactPhone,
         b.CreatedAt, b.UpdatedAt, b.Status == BookingStatus.Completed && b.Review == null, b.Review != null,
-        b.History.OrderBy(h => h.CreatedAt).Select(h => new BookingHistoryDto(h.FromStatus, h.ToStatus, h.ChangedBy?.FullName ?? "Система", h.Note, h.CreatedAt)).ToList());
+        b.History.OrderBy(h => h.CreatedAt).Select(h => new BookingHistoryDto(h.FromStatus, h.ToStatus, h.ChangedBy?.FullName ?? Messages.T("Система", lang), Messages.T(h.Note, lang), h.CreatedAt)).ToList());
 
     public async Task<Booking> CreateAsync(Guid userId, CreateBookingRequest req, CancellationToken ct)
     {

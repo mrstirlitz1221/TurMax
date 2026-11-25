@@ -7,6 +7,7 @@ import { useEffect, useMemo } from "react";
 import { MapContainer, Marker, Polyline, Popup, TileLayer, useMap, ZoomControl } from "react-leaflet";
 import { POI_KIND } from "@/lib/format";
 import type { PoiKind } from "@/lib/types";
+import { useI18n } from "@/i18n/client";
 
 export type MapMarker = {
   id: string;
@@ -72,6 +73,7 @@ export default function LeafletMap({
   onAction?: (m: MapMarker) => void;
   scrollWheelZoom?: boolean;
 }) {
+  const { L } = useI18n();
   const icons = useMemo(() => new Map(markers.map((m) => [m.id, icon(m, m.id === activeId)])), [markers, activeId]);
 
   return (
@@ -95,14 +97,14 @@ export default function LeafletMap({
             )}
             <div className="p-3.5">
               <p className="text-[10.5px] font-semibold tracking-[0.18em] text-turquoise uppercase">
-                {m.type === "destination" ? "Направление" : m.kind ? POI_KIND[m.kind] : "Место"}
+                {m.type === "destination" ? L("Направление") : m.kind ? L(POI_KIND[m.kind]) : L("Место")}
               </p>
               <p className="mt-1 font-display text-[18px] leading-tight text-forest">{m.name}</p>
               {m.summary && <p className="mt-1.5 line-clamp-3 text-[12.5px] leading-snug text-stone">{m.summary}</p>}
               <div className="mt-3 flex flex-wrap gap-3 text-[12.5px] font-semibold">
                 {m.url && (
                   <Link href={m.url} className="text-forest underline underline-offset-2">
-                    Подробнее
+                    {L("Подробнее")}
                   </Link>
                 )}
                 {onAction && actionLabel?.(m) && (

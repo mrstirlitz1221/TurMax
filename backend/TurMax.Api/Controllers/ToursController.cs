@@ -11,13 +11,18 @@ namespace TurMax.Api.Controllers;
 /// <summary>Каталог туров-маршрутов с фильтрами (FR-01) и страница тура (FR-02).</summary>
 [ApiController]
 [Route("api/tours")]
-public class ToursController(AppDbContext db) : ControllerBase
+public class ToursController(AppDbContext db, TranslationService tr) : ControllerBase
 {
     [HttpGet]
     public async Task<PagedResult<TourCardDto>> List([FromQuery] TourQuery f, CancellationToken ct)
     {
         var q = db.Tours.Where(Projections.IsPublic);
-        if (!string.IsNullOrWhiteSpace(f.Q)) { var s = f.Q.Trim(); q = q.Where(t => t.Title.Contains(s) || t.Summary.Contains(s)); }
+        if (!string.IsNullOrWhiteSpace(f.Q))
+        {
+            var s = f.Q.Trim();
+            var ids = tr.SearchIds(TranslationService.Tour, s);
+            q = q.Where(t => t.Title.Contains(s) || t.Summary.Contains(s) || ids.Contains(t.Id.ToString()));
+        }
         if (!string.IsNullOrWhiteSpace(f.Region)) q = q.Where(t => t.Region.Slug == f.Region);
         if (!string.IsNullOrWhiteSpace(f.Category)) q = q.Where(t => t.Category.Slug == f.Category);
         if (!string.IsNullOrWhiteSpace(f.Destination)) q = q.Where(t => t.Points.Any(p => p.Poi.Destination!.Slug == f.Destination));
@@ -41,7 +46,7 @@ public class ToursController(AppDbContext db) : ControllerBase
             _ => q.OrderByDescending(t => t.Views + t.ReviewsCount * 20)
         };
         var total = await q.CountAsync(ct);
-        var items = await q.Skip((f.Page - 1) * f.PageSize).Take(f.PageSize).Select(Projections.TourCard).ToListAsync(ct);
+        var items = await tr.Apply(await q.Skip((f.Page - 1) * f.PageSize).Take(f.PageSize).Select(Projections.TourCard).ToListAsync(ct), ct);
         return new PagedResult<TourCardDto>(items, total, f.Page, f.PageSize);
     }
 
@@ -58,7 +63,7 @@ public class ToursController(AppDbContext db) : ControllerBase
 
         // Статистика просмотров для оператора (FR-16).
         await db.Tours.Where(x => x.Id == t.Id).ExecuteUpdateAsync(s => s.SetProperty(x => x.Views, x => x.Views + 1), ct);
-        return await ToDtoAsync(db, t, ct);
+        return await tr.Apply(await ToDtoAsync(db, t, ct), ct);
     }
 
     public static async Task<TourDto> ToDtoAsync(AppDbContext db, Tour t, CancellationToken ct)

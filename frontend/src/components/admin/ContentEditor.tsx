@@ -7,6 +7,7 @@ import { api, errorMessage, HttpError } from "@/lib/api-client";
 import { POI_KIND, ROAD } from "@/lib/format";
 import type { Category, DestinationCard, Region } from "@/lib/types";
 import { PhotoEditor, type PhotoInput } from "@/components/manage/PhotoEditor";
+import { useI18n } from "@/i18n/client";
 
 type Kind = "destinations" | "poi" | "articles";
 type Field =
@@ -71,6 +72,7 @@ const PUBLIC: Record<Kind, string> = { destinations: "/destinations/", poi: "/at
 
 /** Редактор контента портала (направления, точки интереса, статьи) для администратора. */
 export function ContentEditor({ kind, id }: { kind: Kind; id: string | null }) {
+  const { L } = useI18n();
   const router = useRouter();
   const [v, setV] = useState<Record<string, unknown>>(DEFAULTS[kind]);
   const [photos, setPhotos] = useState<PhotoInput[]>([]);
@@ -101,15 +103,15 @@ export function ContentEditor({ kind, id }: { kind: Kind; id: string | null }) {
     e.preventDefault();
     const er: Record<string, string> = {};
     const nameKey = kind === "articles" ? "title" : "name";
-    if (String(v[nameKey] ?? "").trim().length < 2) er[nameKey] = "Обязательное поле";
-    if (v.slug && !/^[a-z0-9-]+$/.test(String(v.slug))) er.slug = "Только латиница, цифры и дефис";
+    if (String(v[nameKey] ?? "").trim().length < 2) er[nameKey] = L("Обязательное поле");
+    if (v.slug && !/^[a-z0-9-]+$/.test(String(v.slug))) er.slug = L("Только латиница, цифры и дефис");
     if (kind !== "articles") {
       const lat = Number(v.latitude), lng = Number(v.longitude);
-      if (!(lat >= 39 && lat <= 44)) er.latitude = "Широта Кыргызстана: 39–44";
-      if (!(lng >= 69 && lng <= 81)) er.longitude = "Долгота Кыргызстана: 69–81";
+      if (!(lat >= 39 && lat <= 44)) er.latitude = L("Широта Кыргызстана: 39–44");
+      if (!(lng >= 69 && lng <= 81)) er.longitude = L("Долгота Кыргызстана: 69–81");
     }
     setErrors(er);
-    if (Object.keys(er).length) return setMsg({ ok: false, text: "Проверьте поля формы" });
+    if (Object.keys(er).length) return setMsg({ ok: false, text: L("Проверьте поля формы") });
 
     const body: Record<string, unknown> = { photos };
     for (const [k, x] of Object.entries(v)) {
@@ -120,7 +122,7 @@ export function ContentEditor({ kind, id }: { kind: Kind; id: string | null }) {
     try {
       if (id) {
         await api(`/admin/${kind}/${id}`, { method: "PUT", body });
-        setMsg({ ok: true, text: "Сохранено" });
+        setMsg({ ok: true, text: L("Сохранено") });
       } else {
         const r = await api<{ id: string }>(`/admin/${kind}`, { body });
         router.replace(`/admin/content/${kind}/${r.id}`);
@@ -141,8 +143,8 @@ export function ContentEditor({ kind, id }: { kind: Kind; id: string | null }) {
       case "number": return <input {...common} type="number" step="any" className="field" value={String(val ?? "")} onChange={(e) => setV({ ...v, [f.k]: e.target.value })} />;
       case "checkbox": return <input {...common} type="checkbox" className="accent-forest" checked={!!val} onChange={(e) => setV({ ...v, [f.k]: e.target.checked })} />;
       case "region": return <select {...common} className="field" value={String(val)} onChange={(e) => setV({ ...v, [f.k]: Number(e.target.value) })}>{regions.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}</select>;
-      case "destination": return <select {...common} className="field" value={String(val ?? "")} onChange={(e) => setV({ ...v, [f.k]: e.target.value })}><option value="">— нет —</option>{dests.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}</select>;
-      case "select": return <select {...common} className="field" value={String(val)} onChange={(e) => setV({ ...v, [f.k]: e.target.value })}>{Object.entries(f.options).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select>;
+      case "destination": return <select {...common} className="field" value={String(val ?? "")} onChange={(e) => setV({ ...v, [f.k]: e.target.value })}><option value="">{L("— нет —")}</option>{dests.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}</select>;
+      case "select": return <select {...common} className="field" value={String(val)} onChange={(e) => setV({ ...v, [f.k]: e.target.value })}>{Object.entries(f.options).map(([k, l]) => <option key={k} value={k}>{L(l)}</option>)}</select>;
       case "categories": {
         const sel = (val as number[]) ?? [];
         return (
@@ -163,21 +165,26 @@ export function ContentEditor({ kind, id }: { kind: Kind; id: string | null }) {
     <form onSubmit={save} noValidate className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Link href={`/admin/content?type=${kind}`} className="text-[13px] text-stone hover:text-forest">← К списку</Link>
-          <h2 className="mt-1 font-display text-3xl text-forest">{id ? `${TITLES[kind]}: ${String(v.name ?? v.title ?? "")}` : `Новое: ${TITLES[kind].toLowerCase()}`}</h2>
+          <Link href={`/admin/content?type=${kind}`} className="text-[13px] text-stone hover:text-forest">{L("← К списку")}</Link>
+          <h2 className="mt-1 font-display text-3xl text-forest">{id ? `${L(TITLES[kind])}: ${String(v.name ?? v.title ?? "")}` : L("Новое: {what}", { what: L(TITLES[kind]).toLowerCase() })}</h2>
         </div>
-        {id && typeof v.slug === "string" && v.slug && <Link href={`${PUBLIC[kind]}${v.slug}`} className="text-[14px] text-turquoise underline">Открыть на сайте</Link>}
+        {id && (
+          <div className="flex items-center gap-4 text-[14px]">
+            <Link href={`/admin/translations/${kind}/${id}`} className="btn-outline !py-2">{L("Переводы")} · KY / EN</Link>
+            {typeof v.slug === "string" && v.slug && <Link href={`${PUBLIC[kind]}${v.slug}`} className="text-turquoise underline">{L("Открыть на сайте")}</Link>}
+          </div>
+        )}
       </div>
       <div className="card grid gap-5 p-6 md:grid-cols-2">
         {FIELDS[kind].map((f) => (
           <div key={f.k} className={`${"full" in f && f.full ? "md:col-span-2" : ""} ${f.type === "checkbox" ? "flex items-center gap-2" : ""}`}>
             {f.type === "checkbox" ? (
-              <>{input(f)}<label htmlFor={`c-${f.k}`} className="text-[14px]">{f.label}</label></>
+              <>{input(f)}<label htmlFor={`c-${f.k}`} className="text-[14px]">{L(f.label)}</label></>
             ) : (
               <>
-                <label htmlFor={`c-${f.k}`} className="label">{f.label}</label>
+                <label htmlFor={`c-${f.k}`} className="label">{L(f.label)}</label>
                 {input(f)}
-                {"hint" in f && f.hint && <p className="mt-1 text-[12px] text-stone">{f.hint}</p>}
+                {"hint" in f && f.hint && <p className="mt-1 text-[12px] text-stone">{L(f.hint)}</p>}
               </>
             )}
             {errors[f.k] && <p className="mt-1 text-[13px] text-clay">{errors[f.k]}</p>}
@@ -185,12 +192,12 @@ export function ContentEditor({ kind, id }: { kind: Kind; id: string | null }) {
         ))}
       </div>
       <div className="card space-y-3 p-6">
-        <h3 className="font-display text-xl text-forest">Фотографии</h3>
-        <p className="text-[13px] text-stone">Первое фото — обложка. Для фото из открытых источников укажите автора и лицензию.</p>
+        <h3 className="font-display text-xl text-forest">{L("Фотографии")}</h3>
+        <p className="text-[13px] text-stone">{L("Первое фото — обложка. Для фото из открытых источников укажите автора и лицензию.")}</p>
         <PhotoEditor value={photos} onChange={setPhotos} />
       </div>
       <div className="flex items-center gap-4">
-        <button disabled={busy} className="btn-primary">{busy ? "Сохраняем…" : "Сохранить"}</button>
+        <button disabled={busy} className="btn-primary">{busy ? L("Сохраняем…") : L("Сохранить")}</button>
         {msg && <p className={`text-[14px] ${msg.ok ? "text-turquoise" : "text-clay"}`} role="status">{msg.text}</p>}
       </div>
     </form>

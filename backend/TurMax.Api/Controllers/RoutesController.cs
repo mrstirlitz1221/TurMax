@@ -99,7 +99,8 @@ public class RoutesController(AppDbContext db, RouteService routes) : Controller
         return new
         {
             routeId = r.Id, operatorId = op.Id, operatorName = op.Name, e.Participants, e.Days, e.DistanceKm, e.WeightedDistanceKm, e.Vehicles,
-            e.DrivingHoursByDay, e.Items, e.Subtotal, e.SeasonFactor, e.OperatorMargin, e.Total, e.PerPerson, e.Currency, e.Approximate, e.Warnings,
+            e.DrivingHoursByDay, e.Items, e.Subtotal, e.SeasonFactor, e.OperatorMargin, e.Total, e.PerPerson, e.Currency, e.Approximate,
+            warnings = e.Warnings.Select(w => Messages.T(w, Langs.Of(HttpContext))),
             geometry = e.Geometry.Select(g => new[] { g.Lat, g.Lng })
         };
     }

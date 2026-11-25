@@ -174,3 +174,162 @@ body {
 .leaflet-popup-content { margin: 0; width: 240px !important; }
 .leaflet-popup-tip { background: white; }
 .tm-marker { background: transparent; border: 0; }
+
+/* ---------- Параллакс и глубина ----------
+   --p задаётся движком components/parallax/engine.ts (0…1). Все эффекты — только transform/opacity/clip-path. */
+
+/* Блок со своей скоростью прокрутки */
+.px-move {
+  transform: translate3d(0, calc((var(--p, 0.5) - 0.5) * 2 * var(--px-speed, 0px)), 0);
+  will-change: transform;
+}
+@media (max-width: 1023px) {
+  .px-lg-only { --px-speed: 0px !important; }
+}
+
+/* Фото внутри «окна» */
+.px-img {
+  transform: translate3d(0, calc((var(--p, 0.5) - 0.5) * var(--px-img, 10%) * 1.6), 0);
+  will-change: transform;
+}
+.px-img-zoom {
+  transform: translate3d(0, calc((var(--p, 0.5) - 0.5) * var(--px-img, 10%) * 1.6), 0) scale(calc(1.14 - var(--p, 0.5) * 0.14));
+}
+
+/* Обложка из нескольких слоёв: фон уходит медленно, хребты — быстрее, текст — быстрее всех */
+.hero-bg {
+  transform: translate3d(0, calc(var(--p, 0) * 38%), 0) scale(calc(1.06 + var(--p, 0) * 0.14));
+  will-change: transform;
+}
+.hero-ridge-far {
+  transform: translate3d(0, calc(var(--p, 0) * 22%), 0);
+  will-change: transform;
+}
+.hero-ridge-near {
+  transform: translate3d(0, calc(var(--p, 0) * -8%), 0);
+  will-change: transform;
+}
+.hero-copy {
+  transform: translate3d(0, calc(var(--p, 0) * -140px), 0);
+  opacity: calc(1 - var(--p, 0) * 1.5);
+  will-change: transform, opacity;
+}
+.hero-shade {
+  opacity: calc(0.9 + var(--p, 0) * 0.1);
+}
+
+/* Липкая сцена: кадр раскрывается из «окна» на весь экран */
+.expand-frame {
+  --e: min(1, calc(var(--p, 0) * 1.7));
+  clip-path: inset(calc((1 - var(--e)) * 16%) calc((1 - var(--e)) * 24%) round calc((1 - var(--e)) * 10px));
+}
+.expand-img {
+  transform: scale(calc(1.3 - min(1, calc(var(--p, 0) * 1.7)) * 0.3));
+  will-change: transform;
+}
+.expand-title {
+  opacity: calc(1 - var(--p, 0) * 2.6);
+  transform: translate3d(0, calc(var(--p, 0) * -80px), 0);
+}
+.expand-copy {
+  opacity: clamp(0, calc((var(--p, 0) - 0.5) * 3.5), 1);
+  transform: translate3d(0, calc((1 - var(--p, 0)) * 70px), 0);
+}
+.expand-shade {
+  opacity: clamp(0, calc((var(--p, 0) - 0.35) * 2), 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .px-move, .px-img, .px-img-zoom, .hero-bg, .hero-ridge-far, .hero-ridge-near, .hero-copy, .expand-img, .expand-title { transform: none !important; }
+  .hero-copy, .expand-title { opacity: 1 !important; }
+  .expand-frame { clip-path: none; }
+  .expand-copy { opacity: 1; transform: none; }
+}
+
+/* ---------- Появление при прокрутке: варианты ---------- */
+.reveal[data-v="clip"] {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1.15s var(--ease-out-soft);
+}
+.reveal[data-v="clip"] img { transition: transform 1.6s var(--ease-out-soft); }
+.reveal[data-v="clip"]:not(.is-visible) img { transform: scale(1.25); }
+.reveal[data-v="clip"].is-visible { clip-path: inset(0 0 0 0); }
+
+.reveal[data-v="scale"] { transform: scale(0.94); }
+.reveal[data-v="scale"].is-visible { transform: none; }
+
+.reveal[data-v="left"] { transform: translateX(-48px); }
+.reveal[data-v="left"].is-visible { transform: none; }
+
+/* Заголовки: слова выезжают из-под «маски» по очереди */
+.split-word { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.split-word > span {
+  display: inline-block;
+  transform: translate3d(0, 105%, 0);
+  transition: transform 1s var(--ease-out-soft);
+  transition-delay: calc(var(--w, 0) * 55ms);
+}
+.split-ready.is-visible .split-word > span { transform: none; }
+.split-ready:not(.split-armed) .split-word > span { transform: none; transition: none; }
+
+/* Каскад: дети появляются по очереди */
+.stagger > * {
+  opacity: 0;
+  transform: translate3d(0, 36px, 0);
+  transition: opacity 0.9s var(--ease-out-soft), transform 0.9s var(--ease-out-soft);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+.stagger.is-visible > * { opacity: 1; transform: none; }
+.stagger:not(.stagger-armed) > * { opacity: 1; transform: none; transition: none; }
+
+/* ---------- Карточки-«окна»: детали раскрываются при наведении ---------- */
+.card-reveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.6s var(--ease-out-soft), opacity 0.5s ease;
+}
+.card-reveal > * { overflow: hidden; }
+.group:hover .card-reveal, .group:focus-within .card-reveal { grid-template-rows: 1fr; opacity: 1; }
+@media (hover: none) { .card-reveal { grid-template-rows: 1fr; opacity: 1; } }
+
+.card-lift { transition: transform 0.7s var(--ease-out-soft), box-shadow 0.7s var(--ease-out-soft); }
+.card-lift:hover { transform: translateY(-6px); box-shadow: 0 30px 60px -30px rgba(17, 36, 27, 0.6); }
+
+/* ---------- Блок «Как вы хотите путешествовать?»: смена сцен ---------- */
+.xp-slide {
+  opacity: 0;
+  transform: scale(1.12);
+  transition: opacity 1.3s var(--ease-out-soft), transform 7s ease-out;
+}
+.xp-slide.is-active { opacity: 1; transform: scale(1); }
+.xp-copy > * { animation: xp-in 0.9s var(--ease-out-soft) both; }
+.xp-copy > *:nth-child(2) { animation-delay: 0.08s; }
+.xp-copy > *:nth-child(3) { animation-delay: 0.16s; }
+.xp-copy > *:nth-child(4) { animation-delay: 0.24s; }
+@keyframes xp-in { from { opacity: 0; transform: translate3d(0, 28px, 0); } to { opacity: 1; transform: none; } }
+.xp-progress { transform-origin: left; animation: xp-progress var(--xp-dur, 7s) linear both; }
+.xp-paused .xp-progress { animation-play-state: paused; }
+@keyframes xp-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* ---------- Горизонтальная лента, управляемая вертикальной прокруткой ---------- */
+@media (min-width: 1024px) {
+  .hscroll-track {
+    transform: translate3d(calc(var(--p, 0) * var(--dist, 0px) * -1), 0, 0);
+    will-change: transform;
+  }
+  .hscroll-bar { transform: scaleX(var(--p, 0)); transform-origin: left; }
+}
+
+/* ---------- Переход между страницами ---------- */
+@keyframes page-in { from { opacity: 0; transform: translate3d(0, 18px, 0); } to { opacity: 1; transform: none; } }
+.page-enter { animation: page-in 0.7s var(--ease-out-soft) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal[data-v="clip"] { clip-path: none; }
+  .split-word > span, .stagger > * { transform: none !important; opacity: 1 !important; }
+  .xp-slide { transform: none; }
+  .hscroll-track { transform: none !important; }
+}

@@ -6,6 +6,7 @@ import { Suspense, useEffect, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { api, errorMessage } from "@/lib/api-client";
 import { Badge } from "@/components/ui";
+import { useI18n } from "@/i18n/client";
 
 type Item = { id: string; slug: string; name: string; extra?: string | null; published: boolean };
 const CONTENT_TYPES = {
@@ -16,6 +17,7 @@ const CONTENT_TYPES = {
 type Type = keyof typeof CONTENT_TYPES;
 
 function ContentList() {
+  const { L } = useI18n();
   const sp = useSearchParams();
   const router = useRouter();
   const type = (sp.get("type") as Type) in CONTENT_TYPES ? (sp.get("type") as Type) : "destinations";
@@ -32,7 +34,7 @@ function ContentList() {
   }, [type]);
 
   const remove = async (it: Item) => {
-    if (!confirm(`Удалить «${it.name}»? Действие нельзя отменить.`)) return;
+    if (!confirm(L("Удалить «{name}»? Действие нельзя отменить.", { name: it.name }))) return;
     try {
       await api(`/admin/${cfg.api}/${it.id}`, { method: "DELETE" });
       load();
@@ -45,20 +47,20 @@ function ContentList() {
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Тип контента">
+        <div className="flex flex-wrap gap-2" role="group" aria-label={L("Тип контента")}>
           {(Object.keys(CONTENT_TYPES) as Type[]).map((t) => (
             <button key={t} aria-pressed={t === type} onClick={() => router.push(`/admin/content?type=${t}`)} className={`rounded-xs border px-3.5 py-2 text-[13.5px] ${t === type ? "border-forest bg-forest text-white" : "border-graphite/15 bg-white"}`}>
-              {CONTENT_TYPES[t].label}
+              {L(CONTENT_TYPES[t].label)}
             </button>
           ))}
         </div>
         <div className="flex gap-2">
-          <input aria-label="Фильтр" placeholder="Фильтр по названию" className="field !w-56 !py-2" value={q} onChange={(e) => setQ(e.target.value)} />
-          <Link href={`/admin/content/${type}/new`} className="btn-accent !py-2"><Plus size={16} /> Добавить</Link>
+          <input aria-label={L("Фильтр")} placeholder={L("Фильтр по названию")} className="field !w-56 !py-2" value={q} onChange={(e) => setQ(e.target.value)} />
+          <Link href={`/admin/content/${type}/new`} className="btn-accent !py-2"><Plus size={16} /> {L("Добавить")}</Link>
         </div>
       </div>
       {err && <p className="mb-4 text-clay" role="alert">{err}</p>}
-      {!items ? <p className="text-stone">Загрузка…</p> : (
+      {!items ? <p className="text-stone">{L("Загрузка…")}</p> : (
         <ul className="divide-y divide-graphite/8 rounded-sm bg-white">
           {shown.map((it) => (
             <li key={it.id} className="flex items-center gap-3 px-4 py-3">
@@ -66,9 +68,10 @@ function ContentList() {
                 <span className="font-semibold text-forest hover:underline">{it.name}</span>
                 <span className="ml-2 text-[13px] text-stone">{it.extra}</span>
               </Link>
-              {!it.published && <Badge tone="warn">Скрыто</Badge>}
-              <Link href={`${cfg.publicPath}${it.slug}`} className="text-[13px] text-turquoise hover:underline">На сайте</Link>
-              <button aria-label={`Удалить ${it.name}`} onClick={() => remove(it)} className="text-stone hover:text-clay"><Trash2 size={16} /></button>
+              {!it.published && <Badge tone="warn">{L("Скрыто")}</Badge>}
+              <Link href={`/admin/translations/${type}/${it.id}`} className="text-[13px] text-forest hover:underline">{L("Переводы")}</Link>
+              <Link href={`${cfg.publicPath}${it.slug}`} className="text-[13px] text-turquoise hover:underline">{L("На сайте")}</Link>
+              <button aria-label={L("Удалить {name}", { name: it.name })} onClick={() => remove(it)} className="text-stone hover:text-clay"><Trash2 size={16} /></button>
             </li>
           ))}
         </ul>

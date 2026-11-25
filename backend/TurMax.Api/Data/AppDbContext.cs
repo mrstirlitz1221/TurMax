@@ -26,6 +26,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Photo> Photos => Set<Photo>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<Notification> Notifications => Set<Notification>();
+    public DbSet<Translation> Translations => Set<Translation>();
 
     protected override void ConfigureConventions(ModelConfigurationBuilder b)
     {
@@ -197,6 +198,16 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         });
 
         m.Entity<Notification>().HasIndex(x => new { x.UserId, x.IsRead });
+
+        m.Entity<Translation>(e =>
+        {
+            e.Property(x => x.EntityType).HasMaxLength(32);
+            e.Property(x => x.EntityId).HasMaxLength(64);
+            e.Property(x => x.Field).HasMaxLength(32);
+            e.Property(x => x.Lang).HasMaxLength(5);
+            e.Property(x => x.Value).HasColumnType(text);
+            e.HasIndex(x => new { x.EntityType, x.Lang, x.EntityId, x.Field }).IsUnique();
+        });
 
         // Идентификаторы Guid генерируются в коде (Guid.NewGuid()), поэтому новые объекты, добавленные
         // через навигационные свойства, EF Core должен считать новыми, а не уже существующими.

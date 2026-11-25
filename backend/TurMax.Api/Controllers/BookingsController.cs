@@ -13,14 +13,14 @@ namespace TurMax.Api.Controllers;
 [ApiController]
 [Route("api/bookings")]
 [Authorize(Roles = Roles.Tourist)]
-public class BookingsController(AppDbContext db, BookingService bookings) : ControllerBase
+public class BookingsController(AppDbContext db, BookingService bookings, TranslationService tr) : ControllerBase
 {
     [HttpPost]
     public async Task<ActionResult<BookingDto>> Create(CreateBookingRequest req, CancellationToken ct)
     {
         var b = await bookings.CreateAsync(User.UserId(), req, ct);
         var full = await bookings.GetForTouristAsync(b.Id, b.UserId, ct);
-        return CreatedAtAction(nameof(Get), new { id = b.Id }, BookingService.ToDto(full, false));
+        return CreatedAtAction(nameof(Get), new { id = b.Id }, await tr.Apply(BookingService.ToDto(full, false, Langs.Of(HttpContext)), ct));
     }
 
     [HttpGet("my")]
@@ -31,22 +31,22 @@ public class BookingsController(AppDbContext db, BookingService bookings) : Cont
             .Include(b => b.User).Include(b => b.Operator).Include(b => b.Departure).ThenInclude(d => d!.Tour)
             .Include(b => b.Route).Include(b => b.Review).Include(b => b.History).ThenInclude(h => h.ChangedBy)
             .AsSplitQuery().OrderByDescending(b => b.CreatedAt).ToListAsync(ct);
-        return list.Select(b => BookingService.ToDto(b, false)).ToList();
+        return await tr.Apply(list.Select(b => BookingService.ToDto(b, false, Langs.Of(HttpContext))), ct);
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<BookingDto> Get(Guid id, CancellationToken ct) => BookingService.ToDto(await bookings.GetForTouristAsync(id, User.UserId(), ct), false);
+    public async Task<BookingDto> Get(Guid id, CancellationToken ct) => await tr.Apply(BookingService.ToDto(await bookings.GetForTouristAsync(id, User.UserId(), ct), false, Langs.Of(HttpContext)), ct);
 
     public record CancelRequest(string? Reason);
 
     [HttpPost("{id:guid}/cancel")]
     public async Task<BookingDto> Cancel(Guid id, CancelRequest? req, CancellationToken ct) =>
-        BookingService.ToDto(await bookings.CancelAsync(id, User.UserId(), req?.Reason, ct), false);
+        await tr.Apply(BookingService.ToDto(await bookings.CancelAsync(id, User.UserId(), req?.Reason, ct), false, Langs.Of(HttpContext)), ct);
 
     /// <summary>Согласие туриста с ценой, изменённой оператором.</summary>
     [HttpPost("{id:guid}/accept-price")]
     public async Task<BookingDto> AcceptPrice(Guid id, CancellationToken ct) =>
-        BookingService.ToDto(await bookings.AcceptPriceAsync(id, User.UserId(), ct), false);
+        await tr.Apply(BookingService.ToDto(await bookings.AcceptPriceAsync(id, User.UserId(), ct), false, Langs.Of(HttpContext)), ct);
 
     [HttpPost("{id:guid}/review")]
     public async Task<IActionResult> Review(Guid id, ReviewRequest req, CancellationToken ct)
@@ -60,7 +60,7 @@ public class BookingsController(AppDbContext db, BookingService bookings) : Cont
 [ApiController]
 [Route("api/favorites")]
 [Authorize(Roles = Roles.Tourist)]
-public class FavoritesController(AppDbContext db) : ControllerBase
+public class FavoritesController(AppDbContext db, TranslationService tr) : ControllerBase
 {
     [HttpGet]
     public async Task<IReadOnlyList<FavoriteDto>> List(CancellationToken ct)
@@ -70,8 +70,8 @@ public class FavoritesController(AppDbContext db) : ControllerBase
             .Select(f => new { f.Id, f.TourId, f.DestinationId, f.CreatedAt }).ToListAsync(ct);
         var tourIds = favs.Where(f => f.TourId != null).Select(f => f.TourId!.Value).ToList();
         var destIds = favs.Where(f => f.DestinationId != null).Select(f => f.DestinationId!.Value).ToList();
-        var tours = await db.Tours.Where(t => tourIds.Contains(t.Id)).Where(Projections.IsPublic).Select(Projections.TourCard).ToDictionaryAsync(t => t.Id, ct);
-        var dests = await db.Destinations.Where(d => destIds.Contains(d.Id)).Select(Projections.DestinationCard).ToDictionaryAsync(d => d.Id, ct);
+        var tours = (await tr.Apply(await db.Tours.Where(t => tourIds.Contains(t.Id)).Where(Projections.IsPublic).Select(Projections.TourCard).ToListAsync(ct), ct)).ToDictionary(t => t.Id);
+        var dests = (await tr.Apply(await db.Destinations.Where(d => destIds.Contains(d.Id)).Select(Projections.DestinationCard).ToListAsync(ct), ct)).ToDictionary(d => d.Id);
         return favs.Select(f => new FavoriteDto(f.Id, f.TourId is { } t ? tours.GetValueOrDefault(t) : null,
                 f.DestinationId is { } d ? dests.GetValueOrDefault(d) : null, f.CreatedAt))
             .Where(f => f.Tour != null || f.Destination != null).ToList();
@@ -121,8 +121,11 @@ public class NotificationsController(AppDbContext db) : ControllerBase
     public async Task<IReadOnlyList<NotificationDto>> List(CancellationToken ct)
     {
         var uid = User.UserId();
-        return await db.Notifications.Where(n => n.UserId == uid).OrderByDescending(n => n.CreatedAt).Take(50)
+        var lang = Langs.Of(HttpContext);
+        var list = await db.Notifications.Where(n => n.UserId == uid).OrderByDescending(n => n.CreatedAt).Take(50)
             .Select(n => new NotificationDto(n.Id, n.Title, n.Body, n.Link, n.IsRead, n.CreatedAt)).ToListAsync(ct);
+        // Уведомления хранятся на русском и переводятся на язык того, кто их читает.
+        return list.Select(n => n with { Title = Messages.T(n.Title, lang), Body = Messages.T(n.Body, lang) }).ToList();
     }
 
     [HttpPost("read-all")]

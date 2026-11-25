@@ -30,6 +30,7 @@ public class AuthController(AppDbContext db, TokenService tokens, JwtOptions jwt
         var user = new User
         {
             Email = email, FullName = req.FullName.Trim(), Phone = req.Phone?.Trim(), ConsentAt = DateTime.UtcNow,
+            Language = Langs.Of(HttpContext),
             Role = isOperator ? UserRole.Operator : UserRole.Tourist
         };
         user.PasswordHash = hasher.HashPassword(user, req.Password);
@@ -170,5 +171,18 @@ public class AuthController(AppDbContext db, TokenService tokens, JwtOptions jwt
         HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict, Path = "/api/auth", Expires = expires
     };
 
-    static UserDto ToDto(User u) => new(u.Id, u.Email, u.FullName, u.Phone, u.Role.ToString(), u.Operator?.Id, u.Operator?.Name, u.Operator?.Verification);
+    static UserDto ToDto(User u) => new(u.Id, u.Email, u.FullName, u.Phone, u.Role.ToString(), u.Operator?.Id, u.Operator?.Name, u.Operator?.Verification, u.Language);
+
+    public record LanguageRequest(string Language);
+
+    /// <summary>Сохранение языка интерфейса в профиле (п. 2.8: «язык сохраняется в профиле пользователя»).</summary>
+    [Authorize]
+    [HttpPut("me/language")]
+    public async Task<ActionResult<UserDto>> SetLanguage(LanguageRequest req, CancellationToken ct)
+    {
+        var u = await db.Users.Include(x => x.Operator).FirstAsync(x => x.Id == User.UserId(), ct);
+        u.Language = Langs.Normalize(req.Language);
+        await db.SaveChangesAsync(ct);
+        return ToDto(u);
+    }
 }

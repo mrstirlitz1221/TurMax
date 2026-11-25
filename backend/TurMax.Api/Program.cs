@@ -37,6 +37,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddSingleton<TokenService>();
 builder.Services.AddScoped<AuditService>();
+builder.Services.AddScoped<TranslationService>();
 builder.Services.AddSingleton(Channel.CreateBounded<EmailMessage>(new BoundedChannelOptions(500) { FullMode = BoundedChannelFullMode.DropOldest }));
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddHostedService<EmailSenderWorker>();
@@ -136,6 +137,7 @@ app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.Use(async (ctx, next) => { Langs.Of(ctx); await next(); });
 app.MapGet("/api/health", () => Results.Ok(new { status = "ok" })).ExcludeFromDescription();
 
 app.Run();

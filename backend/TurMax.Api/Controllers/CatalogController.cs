@@ -11,23 +11,23 @@ namespace TurMax.Api.Controllers;
 /// <summary>Модуль Catalog: публичные справочники, направления, точки, статьи, поиск, карта (FR-01 – FR-03).</summary>
 [ApiController]
 [Route("api")]
-public class CatalogController(AppDbContext db) : ControllerBase
+public class CatalogController(AppDbContext db, TranslationService tr) : ControllerBase
 {
     [HttpGet("regions")]
     public async Task<IReadOnlyList<RegionDto>> Regions(CancellationToken ct) =>
-        await db.Regions.OrderBy(r => r.Id).Select(r => new RegionDto(r.Id, r.Name, r.Slug, r.Center)).ToListAsync(ct);
+        await tr.Apply(await db.Regions.OrderBy(r => r.Id).Select(r => new RegionDto(r.Id, r.Name, r.Slug, r.Center)).ToListAsync(ct), ct);
 
     [HttpGet("categories")]
     public async Task<IReadOnlyList<CategoryDto>> Categories(CancellationToken ct) =>
-        await db.Categories.OrderBy(c => c.SortOrder).Select(c => new CategoryDto(c.Id, c.Name, c.Slug, c.Tagline, c.Description, c.ImageUrl, c.ImageCredit,
+        await tr.Apply(await db.Categories.OrderBy(c => c.SortOrder).Select(c => new CategoryDto(c.Id, c.Name, c.Slug, c.Tagline, c.Description, c.ImageUrl, c.ImageCredit,
             db.Tours.Count(t => t.CategoryId == c.Id && t.Status == TourStatus.Published && t.Operator.Verification == VerificationStatus.Verified),
-            c.Destinations.Count)).ToListAsync(ct);
+            c.Destinations.Count)).ToListAsync(ct), ct);
 
     [HttpGet("categories/{slug}")]
     public async Task<ActionResult<CategoryDto>> Category(string slug, CancellationToken ct) =>
-        await db.Categories.Where(c => c.Slug == slug).Select(c => new CategoryDto(c.Id, c.Name, c.Slug, c.Tagline, c.Description, c.ImageUrl, c.ImageCredit,
+        (await tr.Apply([await db.Categories.Where(c => c.Slug == slug).Select(c => new CategoryDto(c.Id, c.Name, c.Slug, c.Tagline, c.Description, c.ImageUrl, c.ImageCredit,
             db.Tours.Count(t => t.CategoryId == c.Id && t.Status == TourStatus.Published && t.Operator.Verification == VerificationStatus.Verified),
-            c.Destinations.Count)).FirstOrDefaultAsync(ct) ?? throw AppException.NotFound("Категория не найдена");
+            c.Destinations.Count)).FirstOrDefaultAsync(ct) ?? throw AppException.NotFound("Категория не найдена")], ct))[0];
 
     // ---------- Направления ----------
 
@@ -38,9 +38,14 @@ public class CatalogController(AppDbContext db) : ControllerBase
         var query = db.Destinations.AsQueryable();
         if (!string.IsNullOrWhiteSpace(category)) query = query.Where(d => d.Categories.Any(c => c.Slug == category));
         if (!string.IsNullOrWhiteSpace(region)) query = query.Where(d => d.Region.Slug == region);
-        if (!string.IsNullOrWhiteSpace(q)) query = query.Where(d => d.Name.Contains(q.Trim()) || d.Summary.Contains(q.Trim()));
+        if (!string.IsNullOrWhiteSpace(q))
+        {
+            var s = q.Trim();
+            var ids = tr.SearchIds(TranslationService.Destination, s);
+            query = query.Where(d => d.Name.Contains(s) || d.Summary.Contains(s) || ids.Contains(d.Id.ToString()));
+        }
         if (featured == true) query = query.Where(d => d.IsFeatured);
-        return await query.OrderBy(d => d.SortOrder).ThenBy(d => d.Name).Select(Projections.DestinationCard).ToListAsync(ct);
+        return await tr.Apply(await query.OrderBy(d => d.SortOrder).ThenBy(d => d.Name).Select(Projections.DestinationCard).ToListAsync(ct), ct);
     }
 
     [HttpGet("destinations/{slug}")]
@@ -57,10 +62,10 @@ public class CatalogController(AppDbContext db) : ControllerBase
         var articles = await db.Articles.Where(a => a.IsPublished && a.DestinationId == d.Id).OrderByDescending(a => a.PublishedAt)
             .Take(3).Select(Projections.ArticleCard).ToListAsync(ct);
 
-        return new DestinationDto(d.Id, d.Slug, d.Name, d.Tagline, d.Summary, d.Description, d.Region.ToDto(), d.Latitude, d.Longitude,
+        return await tr.Apply(new DestinationDto(d.Id, d.Slug, d.Name, d.Tagline, d.Summary, d.Description, d.Region.ToDto(), d.Latitude, d.Longitude,
             d.BestTime, Projections.Lines(d.Highlights),
             d.Categories.OrderBy(c => c.SortOrder).Select(c => new CategoryDto(c.Id, c.Name, c.Slug, c.Tagline, c.Description, c.ImageUrl, c.ImageCredit, 0, 0)).ToList(),
-            d.Photos.OrderBy(p => p.SortOrder).Select(p => p.ToDto()).ToList(), attractions, nearby, tours, articles);
+            d.Photos.OrderBy(p => p.SortOrder).Select(p => p.ToDto()).ToList(), attractions, nearby, tours, articles), ct);
     }
 
     // ---------- Точки интереса ----------
@@ -80,8 +85,13 @@ public class CatalogController(AppDbContext db) : ControllerBase
         }
         if (kind is not null) query = query.Where(p => p.Kind == kind);
         if (!string.IsNullOrWhiteSpace(region)) query = query.Where(p => p.Region.Slug == region);
-        if (!string.IsNullOrWhiteSpace(q)) query = query.Where(p => p.Name.Contains(q.Trim()) || p.Summary.Contains(q.Trim()));
-        return await query.OrderBy(p => p.Name).Take(300).Select(Projections.PoiCard).ToListAsync(ct);
+        if (!string.IsNullOrWhiteSpace(q))
+        {
+            var s = q.Trim();
+            var ids = tr.SearchIds(TranslationService.Poi, s);
+            query = query.Where(p => p.Name.Contains(s) || p.Summary.Contains(s) || ids.Contains(p.Id.ToString()));
+        }
+        return await tr.Apply(await query.OrderBy(p => p.Name).Take(300).Select(Projections.PoiCard).ToListAsync(ct), ct);
     }
 
     [HttpGet("poi/{slug}")]
@@ -94,9 +104,9 @@ public class CatalogController(AppDbContext db) : ControllerBase
         var nearby = await NearbyPois(p.Latitude, p.Longitude, 80, [p.Id], 6, ct);
         var tours = await db.Tours.Where(Projections.IsPublic).Where(t => t.Points.Any(tp => tp.PoiId == p.Id))
             .OrderByDescending(t => t.Rating).Take(6).Select(Projections.TourCard).ToListAsync(ct);
-        return new PoiDto(p.Id, p.Slug, p.Name, p.Kind, p.Summary, p.Description, p.Region.ToDto(), p.Latitude, p.Longitude, p.AltitudeM,
+        return await tr.Apply(new PoiDto(p.Id, p.Slug, p.Name, p.Kind, p.Summary, p.Description, p.Region.ToDto(), p.Latitude, p.Longitude, p.AltitudeM,
             p.RoadType, p.EntryFee, p.LodgingPrice, p.NeedsPermit, p.Season, p.Photos.OrderBy(x => x.SortOrder).Select(x => x.ToDto()).ToList(),
-            dest, nearby, tours);
+            dest, nearby, tours), ct);
     }
 
     /// <summary>Ближайшие точки: грубый отбор по прямоугольнику в SQL, точная сортировка по расстоянию гаверсинуса.</summary>
@@ -123,7 +133,7 @@ public class CatalogController(AppDbContext db) : ControllerBase
             d.Photos.OrderBy(p => p.SortOrder).Select(p => p.Url).FirstOrDefault(), "/destinations/" + d.Slug)).ToListAsync(ct);
         var pois = await db.Pois.Where(p => p.IsPublished).Select(p => new MapPointDto(p.Id, p.Slug, p.Name, "poi", p.Kind, p.Summary, p.Latitude, p.Longitude,
             p.Photos.OrderBy(x => x.SortOrder).Select(x => x.Url).FirstOrDefault(), "/attractions/" + p.Slug)).ToListAsync(ct);
-        return dests.Concat(pois).ToList();
+        return await tr.Apply(dests.Concat(pois), ct);
     }
 
     // ---------- Статьи ----------
@@ -135,13 +145,20 @@ public class CatalogController(AppDbContext db) : ControllerBase
         var q = db.Articles.Where(a => a.IsPublished);
         if (!string.IsNullOrWhiteSpace(topic)) q = q.Where(a => a.Topic == topic);
         var total = await q.CountAsync(ct);
-        var items = await q.OrderByDescending(a => a.PublishedAt).Skip((page - 1) * pageSize).Take(pageSize).Select(Projections.ArticleCard).ToListAsync(ct);
+        var items = await tr.Apply(await q.OrderByDescending(a => a.PublishedAt).Skip((page - 1) * pageSize).Take(pageSize).Select(Projections.ArticleCard).ToListAsync(ct), ct);
         return new PagedResult<ArticleCardDto>(items, total, page, pageSize);
     }
 
+    public record TopicDto(string Value, string Label);
+
+    /// <summary>Рубрики журнала: value — ключ фильтра (исходное название), label — название на языке запроса.</summary>
     [HttpGet("articles/topics")]
-    public async Task<IReadOnlyList<string>> ArticleTopics(CancellationToken ct) =>
-        await db.Articles.Where(a => a.IsPublished).Select(a => a.Topic).Distinct().OrderBy(t => t).ToListAsync(ct);
+    public async Task<IReadOnlyList<TopicDto>> ArticleTopics(CancellationToken ct)
+    {
+        var rows = await db.Articles.Where(a => a.IsPublished).Select(a => new { a.Id, a.Topic }).ToListAsync(ct);
+        var cards = await tr.Apply(rows.Select(r => new ArticleCardDto(r.Id, "", "", "", r.Topic, 0, DateTime.MinValue, null)), ct);
+        return rows.Zip(cards).GroupBy(x => x.First.Topic).Select(g => new TopicDto(g.Key, g.First().Second.Topic)).OrderBy(t => t.Label).ToList();
+    }
 
     [HttpGet("articles/{slug}")]
     public async Task<ActionResult<ArticleDto>> Article(string slug, CancellationToken ct)
@@ -152,8 +169,8 @@ public class CatalogController(AppDbContext db) : ControllerBase
             await db.Destinations.Where(d => d.Id == a.DestinationId).Select(Projections.DestinationCard).FirstOrDefaultAsync(ct);
         var related = await db.Articles.Where(x => x.IsPublished && x.Id != a.Id).OrderBy(x => x.Topic == a.Topic ? 0 : 1)
             .ThenByDescending(x => x.PublishedAt).Take(3).Select(Projections.ArticleCard).ToListAsync(ct);
-        return new ArticleDto(a.Id, a.Slug, a.Title, a.Lead, a.Body, a.Topic, a.AuthorName, a.ReadingMinutes, a.PublishedAt,
-            a.Photos.OrderBy(p => p.SortOrder).Select(p => p.ToDto()).ToList(), dest, related);
+        return await tr.Apply(new ArticleDto(a.Id, a.Slug, a.Title, a.Lead, a.Body, a.Topic, a.AuthorName, a.ReadingMinutes, a.PublishedAt,
+            a.Photos.OrderBy(p => p.SortOrder).Select(p => p.ToDto()).ToList(), dest, related), ct);
     }
 
     // ---------- Поиск ----------
@@ -164,14 +181,18 @@ public class CatalogController(AppDbContext db) : ControllerBase
     {
         q = (q ?? "").Trim();
         if (q.Length < 2) return new SearchResultDto([], [], [], []);
+        var dIds = tr.SearchIds(TranslationService.Destination, q);
+        var pIds = tr.SearchIds(TranslationService.Poi, q);
+        var tIds = tr.SearchIds(TranslationService.Tour, q);
+        var aIds = tr.SearchIds(TranslationService.Article, q);
         return new SearchResultDto(
-            await db.Destinations.Where(d => d.Name.Contains(q) || d.Summary.Contains(q) || d.Tagline.Contains(q))
-                .OrderBy(d => d.SortOrder).Take(8).Select(Projections.DestinationCard).ToListAsync(ct),
-            await db.Pois.Where(p => p.IsPublished && (p.Name.Contains(q) || p.Summary.Contains(q)))
-                .OrderBy(p => p.Name).Take(12).Select(Projections.PoiCard).ToListAsync(ct),
-            await db.Tours.Where(Projections.IsPublic).Where(t => t.Title.Contains(q) || t.Summary.Contains(q) || t.Region.Name.Contains(q))
-                .OrderByDescending(t => t.Rating).Take(8).Select(Projections.TourCard).ToListAsync(ct),
-            await db.Articles.Where(a => a.IsPublished && (a.Title.Contains(q) || a.Lead.Contains(q)))
-                .OrderByDescending(a => a.PublishedAt).Take(6).Select(Projections.ArticleCard).ToListAsync(ct));
+            await tr.Apply(await db.Destinations.Where(d => d.Name.Contains(q) || d.Summary.Contains(q) || d.Tagline.Contains(q) || dIds.Contains(d.Id.ToString()))
+                .OrderBy(d => d.SortOrder).Take(8).Select(Projections.DestinationCard).ToListAsync(ct), ct),
+            await tr.Apply(await db.Pois.Where(p => p.IsPublished && (p.Name.Contains(q) || p.Summary.Contains(q) || pIds.Contains(p.Id.ToString())))
+                .OrderBy(p => p.Name).Take(12).Select(Projections.PoiCard).ToListAsync(ct), ct),
+            await tr.Apply(await db.Tours.Where(Projections.IsPublic).Where(t => t.Title.Contains(q) || t.Summary.Contains(q) || t.Region.Name.Contains(q) || tIds.Contains(t.Id.ToString()))
+                .OrderByDescending(t => t.Rating).Take(8).Select(Projections.TourCard).ToListAsync(ct), ct),
+            await tr.Apply(await db.Articles.Where(a => a.IsPublished && (a.Title.Contains(q) || a.Lead.Contains(q) || aIds.Contains(a.Id.ToString())))
+                .OrderByDescending(a => a.PublishedAt).Take(6).Select(Projections.ArticleCard).ToListAsync(ct), ct));
     }
 }

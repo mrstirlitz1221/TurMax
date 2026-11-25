@@ -1,0 +1,639 @@
+{
+ "Region": {
+  "bishkek": {
+   "Name": "Bishkek City",
+   "Center": "Bishkek"
+  },
+  "chuy": {
+   "Name": "Chüy Region",
+   "Center": "Bishkek"
+  },
+  "issyk-kul": {
+   "Name": "Issyk-Kul Region",
+   "Center": "Karakol"
+  },
+  "naryn": {
+   "Name": "Naryn Region",
+   "Center": "Naryn"
+  },
+  "talas": {
+   "Name": "Talas Region",
+   "Center": "Talas"
+  },
+  "jalal-abad": {
+   "Name": "Jalal-Abad Region",
+   "Center": "Jalal-Abad"
+  },
+  "osh-region": {
+   "Name": "Osh Region",
+   "Center": "Osh"
+  },
+  "batken": {
+   "Name": "Batken Region",
+   "Center": "Batken"
+  },
+  "osh": {
+   "Name": "Osh City",
+   "Center": "Osh"
+  }
+ },
+ "Category": {
+  "mountains": {
+   "Name": "Mountain travel",
+   "Tagline": "The ranges of the Tian Shan and Pamir-Alay",
+   "Description": "Most of Kyrgyzstan is mountains: peaks above seven thousand metres, glaciers, passes and high valleys that you can reach by car or on foot."
+  },
+  "trekking": {
+   "Name": "Trekking",
+   "Tagline": "Multi-day routes through gorges and over passes",
+   "Description": "Hiking routes from day trips out of Bishkek to multi-day crossings over passes, with nights in tents, yurts and mountain huts."
+  },
+  "culture": {
+   "Name": "Cultural travel",
+   "Tagline": "Nomadic traditions, crafts and festivals",
+   "Description": "Yurts and felt carpets, horse games, the Manas epic, bazaars and national cuisine — everything that makes up the living culture of the country."
+  },
+  "eco": {
+   "Name": "Ecotourism",
+   "Tagline": "Nature reserves, forests and jailoo pastures",
+   "Description": "Nature reserves and national parks, the walnut forests of Arslanbob, high pastures and guesthouses run by local communities (CBT)."
+  },
+  "adventure": {
+   "Name": "Adventure",
+   "Tagline": "On horseback, by 4×4 and in border zones",
+   "Description": "Horse treks, drives along mountain dirt roads, remote lakes in the border zone and expedition routes to the foot of seven-thousanders."
+  },
+  "family": {
+   "Name": "Family holidays",
+   "Tagline": "Issyk-Kul beaches and easy walks",
+   "Description": "Issyk-Kul, warm in summer, short walks through canyons and gorges, horse rides for beginners and comfortable transfers."
+  },
+  "history": {
+   "Name": "Historic sites",
+   "Tagline": "The Great Silk Road and ancient cities",
+   "Description": "The Tash Rabat caravanserai, Burana Tower, the mausoleums of Uzgen, the sacred Sulayman-Too mountain and petroglyphs — traces of trade routes and ancient states."
+  }
+ },
+ "Destination": {
+  "issyk-kul": {
+   "Name": "Issyk-Kul",
+   "Tagline": "A mountain sea ringed by ranges",
+   "Summary": "The country's largest lake at about 1,600 metres: beaches on the north shore, quiet bays on the south shore and the snowy peaks of the Terskey and Kungey Ala-Too on every side.",
+   "Description": "Issyk-Kul is an endorheic high-mountain lake framed by the Kungey Ala-Too range to the north and the Terskey Ala-Too to the south. Its water is slightly salty and the lake does not freeze in winter, which explains the name — it translates as \"warm lake\".\n\nThe north shore with Cholpon-Ata and Bosteri is a resort coast: sandy beaches, guesthouses and promenades. The south shore is quieter and wilder: the red Skazka canyons, the Barskoon and Juuku gorges and small villages with guesthouses. At the eastern end lies Karakol, the base for hikes to Ala-Kul, Altyn-Arashan and Jeti-Oguz.\n\nThe lake combines well with mountain routes: hike up a gorge in the morning and swim at sunset in the evening.",
+   "BestTime": "July–August for swimming; June and September for hiking and quiet trips",
+   "Highlights": [
+    "Beaches of Cholpon-Ata and Bosteri",
+    "Skazka Canyon on the south shore",
+    "Open-air petroglyph museum in Cholpon-Ata",
+    "Sunsets over the water with the Kungey Ala-Too behind"
+   ]
+  },
+  "karakol": {
+   "Name": "Karakol",
+   "Tagline": "The trekking capital at the foot of the Terskey Ala-Too",
+   "Summary": "A town at the eastern end of Issyk-Kul with the wooden Holy Trinity Church, the Dungan Mosque and trails into the Karakol, Altyn-Arashan and Jeti-Oguz valleys.",
+   "Description": "Karakol is the administrative centre of the Issyk-Kul Region and the main base for hiking in the Terskey Ala-Too. The town was founded in the second half of the 19th century, and its streets still keep single-storey houses with carved window frames.\n\nThe main sights are the wooden Holy Trinity Church and the Dungan Mosque, built without a single nail in the style of Chinese temple architecture. At the Sunday animal market you can watch horses and sheep being traded.\n\nKarakol is the starting point for routes to Ala-Kul lake, the Altyn-Arashan hot springs and the red rocks of Jeti-Oguz, and in winter a ski base operates in the Karakol gorge.",
+   "BestTime": "June–September for hiking, December–March for skiing",
+   "Highlights": [
+    "Holy Trinity Church",
+    "Dungan Mosque",
+    "Start of the trek to Ala-Kul lake",
+    "Dungan cuisine — ashlyan-fu"
+   ]
+  },
+  "ala-kul": {
+   "Name": "Ala-Kul",
+   "Tagline": "A turquoise lake at 3,500 metres",
+   "Summary": "A glacial lake in the Terskey Ala-Too and one of the country's best-known trekking goals. It can only be reached on foot.",
+   "Description": "Ala-Kul lies at the head of the Karakol valley, beneath the glaciers of the Terskey Ala-Too. The colour of the water changes from milky turquoise to deep blue depending on the weather and the light.\n\nThe classic route is the Karakol — Ala-Kul — Altyn-Arashan loop with a pass above the lake. It takes 3–4 days with nights in tents by the lake and at the Altyn-Arashan hot springs. The route requires good fitness and acclimatisation.\n\nMountain weather changes quickly: even in August snow is possible on the pass.",
+   "BestTime": "Mid-July to early September",
+   "Highlights": [
+    "View of the lake from the pass",
+    "Glacier-fed waterfall on the way",
+    "Finish at the Altyn-Arashan hot springs"
+   ]
+  },
+  "jeti-oguz": {
+   "Name": "Jeti-Oguz",
+   "Tagline": "The red rocks of the Seven Bulls and the Broken Heart",
+   "Summary": "A gorge with red sandstone cliffs, a resort on mineral springs and a wide jailoo pasture further up the valley.",
+   "Description": "The name Jeti-Oguz means \"seven bulls\" — the name of the ridge of red sandstone rocks at the entrance to the gorge. Nearby stands the Broken Heart rock, linked to several local legends.\n\nAbove the resort the valley opens into a broad pasture: in summer herders put up their yurts here and Tian Shan spruces grow on the slopes. From here hiking and horse trails lead to waterfalls and into the Kok-Jaiyk valley.\n\nJeti-Oguz is about 25 kilometres from Karakol and makes an easy day trip.",
+   "BestTime": "June–September",
+   "Highlights": [
+    "The Seven Bulls rocks",
+    "The Broken Heart rock",
+    "Kok-Jaiyk jailoo",
+    "Horse rides"
+   ]
+  },
+  "song-kol": {
+   "Name": "Song-Kol",
+   "Tagline": "A high-mountain lake and herders' summer yurts",
+   "Summary": "A lake at about 3,000 metres surrounded by endless pastures. In summer herders camp here and travellers stay in yurts.",
+   "Description": "Song-Kol is the second largest lake in Kyrgyzstan after Issyk-Kul. It lies in an intermontane basin at about 3,000 metres, and in summer its shores become a vast pasture where herders bring herds of horses and flocks of sheep.\n\nA night in a yurt, kumys, a horse ride along the shore and a starry sky with no light pollution are the main reasons to come to Song-Kol. You can get there by 4×4 over the passes from Kochkor, or on foot and on horseback along old herders' trails.\n\nNights at Song-Kol are cold even in July — bring warm clothes.",
+   "BestTime": "June to early September, when the yurt camps are open",
+   "Highlights": [
+    "A night in a yurt by the shore",
+    "A horse trek to the lake",
+    "Starry sky",
+    "Herders' nomadic way of life"
+   ]
+  },
+  "bishkek": {
+   "Name": "Bishkek",
+   "Tagline": "A green capital at the foot of the Kyrgyz Range",
+   "Summary": "The starting point of most trips: Ala-Too Square, the history museum, bazaars, parks and a view of the snowy range right from the city centre.",
+   "Description": "Bishkek is the capital of Kyrgyzstan and the country's main transport hub. The city is laid out with wide avenues and boulevards, and on a clear day the snowy peaks of the Kyrgyz Ala-Too rise above it.\n\nIn the centre are Ala-Too Square with the National History Museum, the Philharmonic building, Oak Park and Erkindik Boulevard. Osh Bazaar is the place to try national food and buy dried fruit, spices and felt goods.\n\nFrom Bishkek it takes about an hour to reach Ala-Archa National Park and an hour and a half to reach Burana Tower.",
+   "BestTime": "All year round; April–May and September–October are the most comfortable months",
+   "Highlights": [
+    "Ala-Too Square",
+    "National History Museum",
+    "Osh Bazaar",
+    "Day trips to Ala-Archa and Burana"
+   ]
+  },
+  "osh": {
+   "Name": "Osh",
+   "Tagline": "One of the oldest cities in Central Asia",
+   "Summary": "The southern capital of the country, with a bazaar on an old trading crossroads and the sacred Sulayman-Too mountain, a UNESCO World Heritage Site.",
+   "Description": "Osh is the second largest city of Kyrgyzstan, located in the Fergana Valley. The city stands on one of the branches of the Great Silk Road, and its bazaar is still one of the busiest in the region.\n\nAbove the city rises Sulayman-Too, inscribed on the UNESCO World Heritage List in 2009. Its slopes hold places of pilgrimage, petroglyphs, a museum inside the mountain and viewpoints over the whole city.\n\nOsh is a convenient base for trips to Uzgen, Lenin Peak and the Alay valley.",
+   "BestTime": "April–June and September–October; Osh is hot in summer",
+   "Highlights": [
+    "Sulayman-Too mountain",
+    "Osh Bazaar",
+    "A trip to Uzgen",
+    "Southern cuisine — Osh plov"
+   ]
+  },
+  "arslanbob": {
+   "Name": "Arslanbob",
+   "Tagline": "A village among ancient walnut forests",
+   "Summary": "A large village on the slopes of the Babash-Ata range surrounded by walnut forests, with two waterfalls and a well-developed network of guesthouses.",
+   "Description": "Arslanbob is best known for its walnut forests — among the largest natural walnut forests in the world. In autumn the villagers harvest the nuts, and whole camps of pickers appear in the forest.\n\nAround the village are the big and small waterfalls, holy places and trails onto the slopes of the Babash-Ata range. A community-based tourism programme has long worked here: guesthouses, guides and horse rides are arranged through local residents.\n\nArslanbob is a good choice for unhurried ecotourism and getting to know everyday life in southern Kyrgyzstan.",
+   "BestTime": "May–June for greenery, September–October for the walnut harvest",
+   "Highlights": [
+    "Walnut forest",
+    "The big waterfall",
+    "CBT guesthouses",
+    "Horse rides on the slopes of Babash-Ata"
+   ]
+  },
+  "sary-chelek": {
+   "Name": "Sary-Chelek",
+   "Tagline": "A protected lake in the western Tian Shan",
+   "Summary": "A mountain lake inside a biosphere reserve, with conifer and walnut forests, several smaller lakes and a rich flora.",
+   "Description": "Lake Sary-Chelek lies within the state reserve of the same name in the Chatkal range. The reserve is part of the UNESCO World Network of Biosphere Reserves.\n\nThe steep slopes around the lake are covered with spruce, fir and broadleaf forests, and there are several smaller lakes nearby. Visits follow the reserve's rules: access to some zones is restricted.\n\nThe road to Sary-Chelek is long, so it is usually combined with Arslanbob and the Toktogul reservoir.",
+   "BestTime": "June–September",
+   "Highlights": [
+    "Biosphere reserve",
+    "Conifer forests on the slopes",
+    "Satellite lakes",
+    "Reserve hiking trails"
+   ]
+  },
+  "tash-rabat": {
+   "Name": "Tash Rabat",
+   "Tagline": "A stone caravanserai on the Silk Road",
+   "Summary": "A stone building in a high valley on the way to the Torugart pass — one of the country's most recognisable historic sites.",
+   "Description": "Tash Rabat is a medieval stone building with domes and many small rooms, hidden in a side valley in the south of the Naryn Region. It is traditionally linked to caravan trade on one of the branches of the Great Silk Road.\n\nIt is surrounded by alpine meadows and yurt camps where you can stay overnight. From Tash Rabat a route leads over a pass to Chatyr-Kul lake, which already lies in the border zone.\n\nThe valley is high in the mountains, so it is cool here even in summer.",
+   "BestTime": "June–September",
+   "Highlights": [
+    "The stone caravanserai",
+    "A night in a yurt camp",
+    "The pass to Chatyr-Kul"
+   ]
+  },
+  "ala-archa": {
+   "Name": "Ala-Archa",
+   "Tagline": "Mountains an hour from Bishkek",
+   "Summary": "A nature park in the Kyrgyz Range with gorges, glaciers and a mountaineering camp — the most popular place for day hikes from the capital.",
+   "Description": "Ala-Archa National Park lies in the gorge of the river of the same name, about 40 kilometres from Bishkek. The name comes from the juniper — archa — that grows on the slopes.\n\nTrails of different difficulty start in the park: a walk along the river, a climb to the Ak-Sai waterfall and glacier, and, for experienced mountaineers, ascents of peaks in the Kyrgyz Range.\n\nThe park charges an entrance fee; at weekends it is busy with visitors from the city.",
+   "BestTime": "May–October for hiking, walks and skiing in winter",
+   "Highlights": [
+    "Ak-Sai waterfall",
+    "Riverside trail",
+    "Mountaineering camp",
+    "Juniper slopes"
+   ]
+  },
+  "kel-suu": {
+   "Name": "Kel-Suu",
+   "Tagline": "A fjord-like lake in the border zone",
+   "Summary": "A long lake between sheer cliffs at the head of the Kok-Kiya valley. A border zone permit is required.",
+   "Description": "Kel-Suu lies in a narrow gorge of the Kokshaal-Too range, not far from the border with China. The lake stretches between almost vertical cliffs and resembles a fjord, and its water level changes noticeably over the year.\n\nThe road to the lake runs along high-altitude dirt roads of the At-Bashy district, and the last section is on foot or on horseback. The lake is in the border zone, so the permit must be arranged in advance.\n\nThis is a route for those ready for long drives and simple living in exchange for a truly remote place.",
+   "BestTime": "July–September",
+   "Highlights": [
+    "Cliffs above the water",
+    "The high Kok-Kiya valley",
+    "A 4×4 journey"
+   ]
+  }
+ },
+ "Poi": {
+  "ploshchad-ala-too": {
+   "Name": "Ala-Too Square",
+   "Summary": "Bishkek's central square with a monument and the state flag.",
+   "Description": "The capital's main square, used for celebrations and the changing of the guard. The National History Museum and Oak Park are nearby."
+  },
+  "nacionalnyy-istoricheskiy-muzey": {
+   "Name": "National History Museum",
+   "Summary": "The country's main history museum on Ala-Too Square.",
+   "Description": "The exhibition covers the history of Kyrgyzstan from antiquity to the present day: archaeological finds, objects of nomadic life and 20th-century documents."
+  },
+  "bishkek-gorod": {
+   "Name": "Bishkek",
+   "Summary": "The capital and the starting point of most routes.",
+   "Description": "The country's main transport hub: Manas International Airport, bus stations, hotels and guesthouses."
+  },
+  "bashnya-burana": {
+   "Name": "Burana Tower",
+   "Summary": "An 11th-century minaret on the site of Balasagun in the Chüy valley.",
+   "Description": "Burana Tower is the surviving part of a minaret on the site of a medieval city associated with Balasagun, one of the Karakhanid capitals. Nearby are stone balbal statues and a small museum. The site is part of the UNESCO World Heritage property «Silk Roads: the Routes Network of Chang'an-Tianshan Corridor»."
+  },
+  "park-ala-archa": {
+   "Name": "Ala-Archa National Park",
+   "Summary": "A gorge with trails to the Ak-Sai waterfall and the glaciers of the Kyrgyz Range.",
+   "Description": "The most accessible mountain park for residents and visitors of Bishkek. Trails start at the mountaineering camp and lead along the river, to the waterfall and to the Ak-Sai glacier."
+  },
+  "cholpon-ata": {
+   "Name": "Cholpon-Ata",
+   "Summary": "A resort town on the north shore of Issyk-Kul.",
+   "Description": "Beaches, guesthouses, an open-air petroglyph museum and the Rukh Ordo cultural centre. The World Nomad Games were held here in 2014–2018."
+  },
+  "rukh-ordo": {
+   "Name": "Rukh Ordo Cultural Centre",
+   "Summary": "A museum complex on the shore of Issyk-Kul in Cholpon-Ata.",
+   "Description": "A complex of chapel-pavilions, sculptures and alleys on the lakeshore dedicated to the spiritual history of Kyrgyzstan."
+  },
+  "karakol-gorod": {
+   "Name": "Karakol",
+   "Summary": "The regional centre and base for hikes in the Terskey Ala-Too.",
+   "Description": "Hotels, guesthouses, gear rental and local guides' offices. Routes into the Karakol, Arashan and Jeti-Oguz valleys start here."
+  },
+  "svyato-troickaya-cerkov": {
+   "Name": "Holy Trinity Church",
+   "Summary": "A wooden Orthodox church in the centre of Karakol.",
+   "Description": "A wooden church from the late 19th — early 20th century, one of Karakol's main architectural landmarks."
+  },
+  "dunganskaya-mechet": {
+   "Name": "Dungan Mosque",
+   "Summary": "A wooden mosque in the style of Chinese temple architecture, built without nails.",
+   "Description": "The mosque was built by Karakol's Dungan community in the early 20th century. The wooden structure was assembled without a single nail, and its carvings and paintings recall Chinese pagodas."
+  },
+  "dzhety-oguz-skaly": {
+   "Name": "Jeti-Oguz Rocks",
+   "Summary": "The red Seven Bulls and Broken Heart rocks at the entrance to the gorge.",
+   "Description": "A ridge of red sandstone rocks that gave the gorge its name. Nearby are a mineral-spring resort and trails to the Kok-Jaiyk jailoo."
+  },
+  "ozero-ala-kul": {
+   "Name": "Ala-Kul Lake",
+   "Summary": "A glacial lake at the head of the Karakol valley, reachable only on foot.",
+   "Description": "The goal of one of the country's most popular treks. Nights are spent in tents on the shore. Acclimatisation and good fitness are required.",
+   "Season": "July–September"
+  },
+  "altyn-arashan": {
+   "Name": "Altyn-Arashan",
+   "Summary": "Hot springs in the Arashan river valley.",
+   "Description": "A small resort with hot springs, yurts and guesthouses in a high valley. People come up on foot or by 4×4; it is the finish of the loop over Ala-Kul.",
+   "Season": "June–September"
+  },
+  "kanon-skazka": {
+   "Name": "Skazka Canyon",
+   "Summary": "Colourful clay rocks of fanciful shapes on the south shore of Issyk-Kul.",
+   "Description": "A small canyon near the village of Tosor with weathered rocks in red, yellow and ochre. The best time for photos is the morning and the hours before sunset."
+  },
+  "vodopad-barskoon": {
+   "Name": "Barskoon Waterfalls",
+   "Summary": "Waterfalls in the Barskoon gorge on the south shore of the lake.",
+   "Description": "The Barskoon gorge is known for its waterfalls and a monument to Yuri Gagarin, who holidayed here. A road to the high plateau runs through the gorge."
+  },
+  "tamga": {
+   "Name": "Tamga",
+   "Summary": "A quiet village on the south shore with guesthouses.",
+   "Description": "A convenient overnight stop between Skazka Canyon and the Barskoon gorge. In the Tamga gorge nearby is a stone with a Tibetan inscription."
+  },
+  "zhyrgalan": {
+   "Name": "Jyrgalan",
+   "Summary": "A mountain village in the east of the region developing as a hub for trekking and freeride.",
+   "Description": "A former mining settlement where locals opened guesthouses and marked trails. Hiking and horse routes in summer, ski touring in winter."
+  },
+  "han-tengri": {
+   "Name": "Khan Tengri Peak",
+   "Summary": "One of the most beautiful peaks of the Tian Shan, a marble pyramid where three countries meet.",
+   "Description": "A peak in the Central Tian Shan whose marble cap glows at sunset. Base camps on the Inylchek glacier are reached by helicopter or a multi-day trek. A border zone permit is required.",
+   "Season": "July–August"
+  },
+  "ozero-son-kul": {
+   "Name": "Song-Kol Lake",
+   "Summary": "A high-mountain lake with summer yurt camps.",
+   "Description": "In summer herders' yurts and tourist camps stand on the shores. A night in a yurt with dinner is the main way to visit.",
+   "Season": "June–September"
+  },
+  "kochkor": {
+   "Name": "Kochkor",
+   "Summary": "A village famous for its shyrdak makers — the gateway to Song-Kol.",
+   "Description": "Kochkor has cooperatives where shyrdak and ala-kiyiz felt carpets are made. It is a convenient place to set off for Song-Kol over the pass."
+  },
+  "naryn-gorod": {
+   "Name": "Naryn",
+   "Summary": "The regional centre on the Naryn river, a stop on the way to Tash Rabat.",
+   "Description": "The town stretches along the Naryn river in a narrow valley. A convenient overnight stop on the way to the south of the region."
+  },
+  "karavan-saray-tash-rabat": {
+   "Name": "Tash Rabat Caravanserai",
+   "Summary": "A medieval stone building in a mountain valley on the way to the Torugart pass.",
+   "Description": "A building with a central dome and many rooms. Next to it are yurt camps where you can stay the night and have lunch."
+  },
+  "ozero-chatyr-kul": {
+   "Name": "Chatyr-Kul Lake",
+   "Summary": "A high-mountain lake near the Torugart pass in the border zone.",
+   "Description": "A large lake in a high basin surrounded by ranges. It is in the border zone — a permit is required."
+  },
+  "ozero-kel-suu": {
+   "Name": "Kel-Suu Lake",
+   "Summary": "A lake between sheer cliffs in the Kokshaal-Too range.",
+   "Description": "A remote lake in the border zone. The last part of the way is on foot or on horseback; nights are spent in a yurt camp in the valley.",
+   "Season": "July–September"
+  },
+  "osh-gorod": {
+   "Name": "Osh",
+   "Summary": "The country's southern capital in the Fergana Valley.",
+   "Description": "Airport, hotels and guesthouses. The starting point for trips to Uzgen, the Alay valley and Lenin Peak."
+  },
+  "sulayman-too": {
+   "Name": "Sulayman-Too",
+   "Summary": "A sacred mountain in the centre of Osh — a UNESCO World Heritage Site.",
+   "Description": "A mountain with five summits, places of pilgrimage, petroglyphs and a museum inside the mountain. Inscribed on the UNESCO World Heritage List in 2009."
+  },
+  "uzgen": {
+   "Name": "Uzgen Architectural Complex",
+   "Summary": "A minaret and mausoleums of the Karakhanid era in the town of Uzgen.",
+   "Description": "A complex of medieval buildings: a minaret and mausoleums with rich carved decoration in fired brick and terracotta."
+  },
+  "pik-lenina": {
+   "Name": "Lenin Peak",
+   "Summary": "A seven-thousander of the Trans-Alay range on the border with Tajikistan.",
+   "Description": "One of the most popular peaks above seven thousand metres among mountaineers. In summer base camps operate at the foot, on the Achik-Tash meadow, which can be reached from Osh via the Alay valley.",
+   "Season": "July–August"
+  },
+  "arslanbob-selo": {
+   "Name": "Arslanbob",
+   "Summary": "A village in the walnut forests with guesthouses and waterfalls.",
+   "Description": "The centre of community-based tourism in the south: guesthouses, guides, horse rides, the big and small waterfalls."
+  },
+  "ozero-sary-chelek": {
+   "Name": "Sary-Chelek Lake",
+   "Summary": "A lake in the Sary-Chelek biosphere reserve.",
+   "Description": "A lake among the forested slopes of the Chatkal range. Visits follow the rules of the reserve."
+  },
+  "toktogulskoe-vodohranilishche": {
+   "Name": "Toktogul Reservoir",
+   "Summary": "A large reservoir among the mountains on the Bishkek — Osh highway.",
+   "Description": "Turquoise water surrounded by bare mountains — a must-stop on the road between the north and the south of the country."
+  },
+  "saymaluu-tash": {
+   "Name": "Saimaluu-Tash",
+   "Summary": "A high-mountain tract with thousands of rock carvings.",
+   "Description": "One of the largest concentrations of petroglyphs in Central Asia. The tract is accessible only a few months a year, on foot or on horseback.",
+   "Season": "July–August"
+  }
+ },
+ "Tour": {
+  "issyk-kul-krug-3-dnya": {
+   "Title": "Issyk-Kul in three days: Cholpon-Ata, Karakol and Jeti-Oguz",
+   "Summary": "The classic loop around the lake from the diploma example: the north shore, Karakol and the red rocks of Jeti-Oguz.",
+   "Description": "A route for a first acquaintance with Issyk-Kul. On day one we drive from Bishkek along the north shore to Cholpon-Ata, visit the petroglyph museum and swim. Day two is Karakol: the Holy Trinity Church, the Dungan Mosque and lunch with ashlyan-fu. Day three starts in the Jeti-Oguz gorge by the Seven Bulls rocks, after which we return to Bishkek.",
+   "Recommendations": [
+    "Bring swimwear and sunscreen",
+    "Evenings by the lake are cool — a light jacket helps",
+    "Covered clothing is required to visit the mosque"
+   ],
+   "Includes": [
+    "Minivan transport",
+    "Nights in guesthouses",
+    "Three meals a day",
+    "Guide"
+   ]
+  },
+  "trek-ala-kul-altyn-arashan": {
+   "Title": "Trek to Ala-Kul Lake with a finish at Altyn-Arashan",
+   "Summary": "A four-day loop from Karakol: a climb up the gorge, a night by a turquoise lake, a pass and hot springs.",
+   "Description": "The best-known trek in Kyrgyzstan. Day one is a climb up the Karakol gorge through spruce forest to a camp by the river. Day two is a steep ascent along the waterfall to Ala-Kul lake. On day three we cross the pass above the lake and descend into the Arashan valley. The last day is rest at the hot springs and the descent to Karakol.",
+   "Recommendations": [
+    "Multi-day hiking experience and good fitness are required",
+    "Spend a day or two at altitude to acclimatise",
+    "Trekking boots, a warm sleeping bag and a rain jacket are essential",
+    "Snow is possible on the pass even in August"
+   ],
+   "Includes": [
+    "Transfer Karakol — trailhead",
+    "Mountain guide",
+    "Tents and group equipment",
+    "Meals on the route"
+   ]
+  },
+  "son-kul-noch-v-yurte": {
+   "Title": "Song-Kol: a night in a yurt at 3,000 metres",
+   "Summary": "A shyrdak workshop in Kochkor, the pass to Song-Kol, an evening by the yurt and a horse ride along the shore.",
+   "Description": "A trip into nomadic Kyrgyzstan. Day one is the drive from Bishkek to Kochkor and a visit to the felt carpet makers. On day two we climb a mountain road to Song-Kol, settle into a yurt camp and go riding. Day three — sunrise over the lake and the return.",
+   "Recommendations": [
+    "Nights at the lake can be near freezing — bring warm clothes",
+    "Mobile coverage on the shore is weak or absent",
+    "No riding experience is needed"
+   ],
+   "Includes": [
+    "Transport",
+    "Nights in a yurt and a guesthouse",
+    "Home-cooked meals",
+    "Horse ride with a local guide"
+   ]
+  },
+  "tash-rabat-chatyr-kul": {
+   "Title": "Tash Rabat and Chatyr-Kul: in the footsteps of the Silk Road",
+   "Summary": "Naryn, a stone caravanserai and a high-mountain lake in the border zone.",
+   "Description": "A route to the south of the Naryn Region. After a night in Naryn we drive to the Tash Rabat valley, explore the caravanserai and stay overnight in a yurt camp. The next day we visit Chatyr-Kul lake near the Torugart pass (the operator arranges the permit). Return via Naryn.",
+   "Recommendations": [
+    "The border zone permit is arranged in advance — send your passport details to the operator",
+    "Altitude is about 3,500 m: avoid strenuous effort on the first day"
+   ],
+   "Includes": [
+    "Transport",
+    "Permit arrangement",
+    "Nights in a guesthouse and a yurt",
+    "Meals",
+    "Guide"
+   ]
+  },
+  "ala-archa-odnodnevnyy-pohod": {
+   "Title": "Ala-Archa: hike to the Ak-Sai waterfall",
+   "Summary": "A day trip from Bishkek to the national park with a climb to the waterfall.",
+   "Description": "In the morning we leave Bishkek and an hour later reach the entrance to Ala-Archa National Park. The climb to the Ak-Sai waterfall takes a few hours; lunch is in a clearing by the river. In the evening we return to the city.",
+   "Recommendations": [
+    "Bring comfortable shoes with good grip and water",
+    "The park is busy at weekends — we leave early"
+   ],
+   "Includes": [
+    "Transfer from Bishkek",
+    "Park entrance ticket",
+    "Guide",
+    "Snack"
+   ]
+  },
+  "burana-za-odin-den": {
+   "Title": "Burana Tower: the Chüy valley in one day",
+   "Summary": "A short trip from Bishkek to the 11th-century minaret, the balbals and the site museum.",
+   "Description": "An easy trip available all year round. We explore Burana Tower, climb to its viewing platform, walk through the field of stone statues and visit the small site museum.",
+   "Recommendations": [
+    "The stairs inside the tower are narrow — bring a torch",
+    "Suitable for families with children"
+   ],
+   "Includes": [
+    "Transfer",
+    "Entrance ticket",
+    "Guided tour"
+   ]
+  },
+  "arslanbob-sary-chelek": {
+   "Title": "The walnut forests of Arslanbob and Sary-Chelek Lake",
+   "Summary": "The south of the country: Osh, Arslanbob guesthouses, waterfalls and a protected lake.",
+   "Description": "The route starts in Osh with a walk on Sulayman-Too. Then we go to Arslanbob, stay in a guesthouse, walk in the walnut forest and climb to the waterfall. From here we head to the Sary-Chelek reserve and spend a day by the lake. The way back runs past the Toktogul reservoir.",
+   "Recommendations": [
+    "The reserve has visiting rules — follow the rangers' instructions",
+    "Autumn is walnut-picking season in Arslanbob"
+   ],
+   "Includes": [
+    "Transport",
+    "Guesthouses",
+    "Meals",
+    "Guide",
+    "Reserve eco-fee"
+   ]
+  },
+  "osh-uzgen": {
+   "Title": "Osh and Uzgen: ancient cities of the south",
+   "Summary": "The sacred Sulayman-Too mountain, Osh Bazaar and the Karakhanid mausoleums of Uzgen.",
+   "Description": "Day one is devoted to Osh: the climb up Sulayman-Too, the museum in the mountain's cave and a walk through the bazaar. Day two is a trip to Uzgen to see the 11th–12th-century minaret and mausoleums, then back to Osh.",
+   "Recommendations": [
+    "It is hot in summer — plan walks for the morning and evening",
+    "Covered clothing is required at holy sites"
+   ],
+   "Includes": [
+    "Transport",
+    "Hotel in Osh",
+    "Lunches",
+    "Guide"
+   ]
+  },
+  "yuzhnyy-bereg-skazka-barskoon": {
+   "Title": "The south shore: Skazka Canyon and the Barskoon waterfalls",
+   "Summary": "A relaxed trip along the south shore of Issyk-Kul with walks for the whole family.",
+   "Description": "From Bishkek we go to the south shore of Issyk-Kul, walk among the colourful rocks of Skazka Canyon and spend the night in a guesthouse in Tamga. On day two we go up the Barskoon gorge to the waterfalls and return.",
+   "Recommendations": [
+    "There is little shade in the canyon — bring a hat and water",
+    "Suitable for children aged 6 and over"
+   ],
+   "Includes": [
+    "Transport",
+    "Guesthouse",
+    "Meals",
+    "Guide"
+   ]
+  },
+  "kel-suu-ekspediciya": {
+   "Title": "Kel-Suu: an expedition to a lake in the border zone",
+   "Summary": "A long drive via Naryn and At-Bashy, a yurt camp in Kok-Kiya and a walk out to the lake between the cliffs.",
+   "Description": "A route for those who want to see one of the most remote lakes in the country. Day one is the drive to Naryn. Day two follows dirt roads into the Kok-Kiya valley with a night in yurts. Day three is a hike or horse ride to Kel-Suu lake. Day four is the return.",
+   "Recommendations": [
+    "The border zone permit is arranged in advance",
+    "Long off-road drives — keep this in mind if you get motion sick",
+    "There is no mobile coverage in the valley"
+   ],
+   "Includes": [
+    "4×4 vehicle",
+    "Permit arrangement",
+    "Yurt camp",
+    "Meals",
+    "Guide"
+   ]
+  }
+ },
+ "Article": {
+  "chto-posmotret-v-kyrgyzstane": {
+   "Title": "What to see in Kyrgyzstan: 10 places for a first trip",
+   "Lead": "Lakes at three thousand metres, red rocks, a Silk Road caravanserai and a sacred mountain in the middle of a city — a short list for first-time visitors.",
+   "Topic": "Trip ideas",
+   "AuthorName": "TurMax editorial team",
+   "Body": "Kyrgyzstan is small, but very diverse. In two weeks you can see high-mountain lakes, glaciers, walnut forests and ancient cities — if you plan the route well.\n\n## The north: Bishkek, Ala-Archa and Burana\n\nMost trips begin in Bishkek. On the first day walk across Ala-Too Square and visit the National History Museum, and on the next day go to Ala-Archa National Park. An hour and a half to the east is Burana Tower, an 11th-century minaret on the site of a medieval city.\n\n## Issyk-Kul and Karakol\n\nIssyk-Kul is the country's main lake. The north shore suits a beach holiday, the south shore — walks through Skazka Canyon and the gorges. On the eastern shore stands Karakol with the wooden Holy Trinity Church, the Dungan Mosque and the start of many treks.\n\n## Ala-Kul and Jeti-Oguz\n\nAla-Kul lake is the goal of a multi-day hike, while the red rocks of Jeti-Oguz can be seen on a single trip from Karakol.\n\n## Song-Kol and Tash Rabat\n\nIn the centre of the country lies the high Song-Kol, where herders live in summer and yurt camps operate. Further south, on the way to the Torugart pass, is the stone caravanserai of Tash Rabat.\n\n## The south: Osh, Uzgen and Arslanbob\n\nOsh is one of the oldest cities in the region, with Sulayman-Too mountain on the UNESCO World Heritage List. Nearby are the mausoleums of Uzgen and the walnut forests of Arslanbob.\n\n## How to fit it all in\n\nIn a week you can drive the northern loop: Bishkek — Issyk-Kul — Karakol — Song-Kol. The south needs another week or a domestic flight to Osh. You can build your own route and see an estimated cost right away in the TurMax planner."
+  },
+  "kuda-poehat-letom": {
+   "Title": "Where to go in summer: high lakes and jailoo pastures",
+   "Lead": "Summer is when the passes open, herders move up to the jailoo and yurt camps welcome guests. Here is where to go in June, July and August.",
+   "Topic": "Seasons",
+   "AuthorName": "TurMax editorial team",
+   "Body": "The mountain season in Kyrgyzstan is short: many high roads and trails are open roughly from June to September. It is better to plan your trip in advance.\n\n## June: green valleys\n\nIn June the valleys are still green while snow may remain on the passes. It is a good time for Ala-Archa, Jeti-Oguz, Arslanbob and drives along Issyk-Kul without the summer crowds.\n\n## July: the high country and yurts open\n\nBy July yurt camps start operating at Song-Kol and in the Tash Rabat valley. The trail to Ala-Kul lake opens and the season for climbing seven-thousanders begins.\n\n## August: the warm water of Issyk-Kul\n\nIn August the water of Issyk-Kul is at its warmest, and the north shore is at the peak of the beach season. It is the most popular month for travel, so book accommodation and transport early.\n\n## What to bring\n\nEven in summer it can be close to freezing at night at 3,000 metres. You will need a warm jacket, a hat, sunscreen and sunglasses — the mountain sun is very strong."
+  },
+  "samye-krasivye-ozera": {
+   "Title": "The most beautiful lakes of Kyrgyzstan",
+   "Lead": "Issyk-Kul, Song-Kol, Ala-Kul, Sary-Chelek, Kel-Suu and Chatyr-Kul — six lakes worth a trip to the mountains.",
+   "Topic": "Nature",
+   "AuthorName": "TurMax editorial team",
+   "Body": "Kyrgyzstan has thousands of lakes, most of them high-mountain and glacial. Here are six that most often appear in travellers' itineraries.\n\n## Issyk-Kul\n\nThe country's largest lake, at about 1,600 metres. In summer — beaches and swimming; the rest of the year — views of snowy ranges from both shores.\n\n## Song-Kol\n\nThe second largest lake, at about 3,000 metres. The main reasons to go are herders' yurts, horses and the starry sky.\n\n## Ala-Kul\n\nA turquoise glacial lake above Karakol, reachable only on foot. The goal of one of the country's most popular treks.\n\n## Sary-Chelek\n\nA lake in a biosphere reserve in the west of the country, surrounded by conifer and broadleaf forests.\n\n## Kel-Suu\n\nA lake between sheer cliffs in the border zone near the Chinese border. A permit and readiness for off-road driving are required.\n\n## Chatyr-Kul\n\nA high-mountain lake near the Torugart pass. It is usually combined with a trip to Tash Rabat."
+  },
+  "nacionalnaya-kuhnya": {
+   "Title": "National cuisine: what to try in Kyrgyzstan",
+   "Lead": "Beshbarmak, plov, lagman, kumys and boorsok — a guide to the dishes you will meet in a yurt, a guesthouse and at the bazaar.",
+   "Topic": "Cuisine",
+   "AuthorName": "TurMax editorial team",
+   "Body": "Kyrgyz cuisine grew out of nomadic life: lots of meat, dairy and dough. In the south Uzbek cuisine has a noticeable influence, in Karakol — Dungan cuisine.\n\n## Beshbarmak\n\nThe main festive dish: boiled meat with thinly cut noodles and broth. The name means \"five fingers\" — it was traditionally eaten by hand.\n\n## Plov and lagman\n\nIn the south, especially in Osh, plov is cooked in a kazan over an open fire. Lagman — hand-pulled noodles with meat and vegetables — is popular all over the country.\n\n## Ashlyan-fu\n\nA cold spicy soup with starch noodles — the signature dish of Karakol, which came from Dungan cuisine.\n\n## Kumys and dairy products\n\nIn summer herders on the jailoo make kumys from mare's milk. It is worth trying at least once, but carefully if you are not used to fermented milk drinks.\n\n## Boorsok and tea\n\nBoorsok are small pieces of fried dough served with tea in almost every home."
+  },
+  "kultura-i-tradicii": {
+   "Title": "Culture and traditions: the yurt, kok-boru and the Manas epic",
+   "Lead": "How a yurt is built, why horse games fill whole stadiums and what Manas means for Kyrgyz culture.",
+   "Topic": "Culture",
+   "AuthorName": "TurMax editorial team",
+   "Body": "Despite the rapid growth of cities, nomadic traditions remain part of everyday life in Kyrgyzstan — especially in summer, when families move up to the pastures.\n\n## The yurt\n\nA yurt is a collapsible dwelling with a wooden frame and felt covering. It can be assembled in a few hours and carried on horses. The knowledge and skills of making Kyrgyz and Kazakh yurts are inscribed on the UNESCO Representative List of the Intangible Cultural Heritage. The image of the yurt's crown — the tunduk — appears on the national flag of Kyrgyzstan.\n\n## Felt: shyrdak and ala-kiyiz\n\nA shyrdak is a mosaic felt carpet made of sewn pieces; an ala-kiyiz is a pressed felt carpet with a pattern. In the village of Kochkor there are workshops where you can watch the process and buy carpets.\n\n## Kok-boru and horse games\n\nKok-boru is a team horse game in which riders fight for a goat carcass and throw it into the opponents' \"kazan\". Horse games are an essential part of festivals, and the World Nomad Games have been held three times in Cholpon-Ata.\n\n## The Manas epic\n\nManas is a heroic epic about the hero Manas and his descendants, one of the longest epics in the world. It is performed by storytellers called manaschy, and hearing a live performance is a special experience."
+  },
+  "sovety-puteshestvennikam": {
+   "Title": "Travel tips: season, altitude, permits and connectivity",
+   "Lead": "Practical things to think about before your trip: acclimatisation, border zones, roads and mobile coverage in the mountains.",
+   "Topic": "Tips",
+   "AuthorName": "TurMax editorial team",
+   "Body": "The mountains make travelling in Kyrgyzstan impressive, but they require preparation. Here is what to know in advance.\n\n## Altitude and acclimatisation\n\nMany popular places lie above 3,000 metres: Song-Kol, Tash Rabat, Ala-Kul. Climb gradually, drink more water and do not plan heavy exertion on your first day at altitude. A headache and shortness of breath are a reason to slow down, and a sharp deterioration in how you feel is a reason to descend.\n\n## Border zones\n\nPart of the territory near the borders — for example the area of Kel-Suu and Chatyr-Kul lakes and the Inylchek valley — is in the border zone. A permit is required and must be arranged in advance. TurMax route cards mark such places.\n\n## Roads\n\nThe main highways are paved, but many lakes and gorges are reached by gravel and dirt roads. Travel times on them are much longer than they look on the map. The TurMax route planner takes the road type into account and warns you if a day has more than 8 hours on the road.\n\n## Connectivity and offline maps\n\nIn the high mountains there is often no mobile signal. Download offline maps and save your route as GPX — it opens in a navigation app without the internet.\n\n## Money\n\nCities have ATMs and card payments, but villages and yurt camps more often accept cash in som."
+  }
+ },
+ "Operator": {
+  "ala-too-trekking-demo": {
+   "Name": "Ala-Too Trekking (demo)",
+   "Description": "A demo operator for testing the system: hiking routes and mountain treks in the north of Kyrgyzstan."
+  },
+  "issyk-kul-travel-demo": {
+   "Name": "Issyk-Kul Travel (demo)",
+   "Description": "A demo operator: trips around Issyk-Kul, family and cultural holidays."
+  },
+  "naryn-cbt-demo": {
+   "Name": "Naryn CBT (demo)",
+   "Description": "A demo community-based tourism group: yurts at Song-Kol, horse routes, Tash Rabat."
+  },
+  "yuzhnyy-ekspress-demo": {
+   "Name": "South Express (demo)",
+   "Description": "A demo operator: trips around the south of the country — Osh, Uzgen, Arslanbob, Sary-Chelek."
+  }
+ },
+ "TourPoint": {
+  "issyk-kul-krug-3-dnya:2": {
+   "Note": "Petroglyph museum and beach"
+  },
+  "trek-ala-kul-altyn-arashan:2": {
+   "Note": "Night on the shore"
+  },
+  "trek-ala-kul-altyn-arashan:3": {
+   "Note": "Hot springs"
+  },
+  "son-kul-noch-v-yurte:2": {
+   "Note": "Shyrdak workshop"
+  },
+  "son-kul-noch-v-yurte:3": {
+   "Note": "Night in a yurt"
+  }
+ }
+}

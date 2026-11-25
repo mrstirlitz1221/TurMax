@@ -19,11 +19,12 @@ public record PoiCardDto(Guid Id, string Slug, string Name, PoiKind Kind, string
 public record DestinationDto(Guid Id, string Slug, string Name, string Tagline, string Summary, string Description, RegionDto Region,
     decimal Latitude, decimal Longitude, string? BestTime, IReadOnlyList<string> Highlights, IReadOnlyList<CategoryDto> Categories,
     IReadOnlyList<PhotoDto> Photos, IReadOnlyList<PoiCardDto> Attractions, IReadOnlyList<PoiCardDto> Nearby,
-    IReadOnlyList<TourCardDto> Tours, IReadOnlyList<ArticleCardDto> Articles);
+    IReadOnlyList<TourCardDto> Tours, IReadOnlyList<ArticleCardDto> Articles, bool Untranslated = false);
 
 public record PoiDto(Guid Id, string Slug, string Name, PoiKind Kind, string Summary, string Description, RegionDto Region,
     decimal Latitude, decimal Longitude, int? AltitudeM, RoadType RoadType, decimal? EntryFee, decimal? LodgingPrice, bool NeedsPermit,
-    string? Season, IReadOnlyList<PhotoDto> Photos, DestinationCardDto? Destination, IReadOnlyList<PoiCardDto> Nearby, IReadOnlyList<TourCardDto> Tours);
+    string? Season, IReadOnlyList<PhotoDto> Photos, DestinationCardDto? Destination, IReadOnlyList<PoiCardDto> Nearby, IReadOnlyList<TourCardDto> Tours,
+    bool Untranslated = false);
 
 public record MapPointDto(Guid Id, string Slug, string Name, string Type, PoiKind? Kind, string Summary, decimal Latitude, decimal Longitude, string? ImageUrl, string Url);
 
@@ -42,7 +43,8 @@ public record TourDto(Guid Id, string Slug, string Title, string Summary, string
     int Days, Difficulty Difficulty, int SeasonFromMonth, int SeasonToMonth, int? MaxAltitudeM, decimal? DistanceKm, decimal PriceFrom,
     IReadOnlyList<string> GuideLanguages, IReadOnlyList<string> Recommendations, IReadOnlyList<string> Includes, bool NeedsPermit,
     decimal Rating, int ReviewsCount, IReadOnlyList<PhotoDto> Photos, IReadOnlyList<TourPointDto> Points,
-    IReadOnlyList<DepartureDto> Departures, OperatorPublicDto Operator, IReadOnlyList<ReviewDto> Reviews, TourStatus Status);
+    IReadOnlyList<DepartureDto> Departures, OperatorPublicDto Operator, IReadOnlyList<ReviewDto> Reviews, TourStatus Status,
+    bool Untranslated = false);
 
 public class TourQuery
 {
@@ -67,7 +69,8 @@ public class TourQuery
 // ---------- Статьи ----------
 public record ArticleCardDto(Guid Id, string Slug, string Title, string Lead, string Topic, int ReadingMinutes, DateTime PublishedAt, PhotoDto? Cover);
 public record ArticleDto(Guid Id, string Slug, string Title, string Lead, string Body, string Topic, string AuthorName, int ReadingMinutes,
-    DateTime PublishedAt, IReadOnlyList<PhotoDto> Photos, DestinationCardDto? Destination, IReadOnlyList<ArticleCardDto> Related);
+    DateTime PublishedAt, IReadOnlyList<PhotoDto> Photos, DestinationCardDto? Destination, IReadOnlyList<ArticleCardDto> Related,
+    bool Untranslated = false);
 
 public record SearchResultDto(IReadOnlyList<DestinationCardDto> Destinations, IReadOnlyList<PoiCardDto> Attractions,
     IReadOnlyList<TourCardDto> Tours, IReadOnlyList<ArticleCardDto> Articles);
@@ -111,7 +114,7 @@ public class ChangePasswordRequest
     [Required, MinLength(8, ErrorMessage = "Пароль — не короче 8 символов"), MaxLength(128)] public string NewPassword { get; set; } = "";
 }
 
-public record UserDto(Guid Id, string Email, string FullName, string? Phone, string Role, Guid? OperatorId, string? OperatorName, VerificationStatus? OperatorStatus);
+public record UserDto(Guid Id, string Email, string FullName, string? Phone, string Role, Guid? OperatorId, string? OperatorName, VerificationStatus? OperatorStatus, string Language = "ru");
 public record AuthResponse(string AccessToken, DateTime ExpiresAt, UserDto User);
 
 // ---------- Конструктор маршрута ----------

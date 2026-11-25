@@ -5,9 +5,11 @@ import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Expand, X } from "lucide-react";
 import { PhotoCredit } from "@/components/ui";
 import type { Photo } from "@/lib/types";
+import { useI18n } from "@/i18n/client";
 
 /** Галерея: мозаика превью и полноэкранный просмотр с клавиатурой и свайпом. */
 export function Gallery({ photos, title }: { photos: Photo[]; title: string }) {
+  const { L } = useI18n();
   const [open, setOpen] = useState<number | null>(null);
   const [touchX, setTouchX] = useState<number | null>(null);
   const close = useCallback(() => setOpen(null), []);
@@ -39,7 +41,7 @@ export function Gallery({ photos, title }: { photos: Photo[]; title: string }) {
             key={p.url}
             type="button"
             onClick={() => setOpen(i)}
-            aria-label={`Открыть фото ${i + 1} из ${photos.length}`}
+            aria-label={L("Открыть фото {n} из {total}", { n: i + 1, total: photos.length })}
             className={`zoom-img group relative overflow-hidden rounded-sm bg-mist ${i === 0 ? "col-span-2 row-span-2" : ""}`}
           >
             <Image src={p.url} alt={p.alt || title} fill sizes={i === 0 ? "(max-width: 768px) 100vw, 50vw" : "25vw"} className="object-cover" />
@@ -55,7 +57,7 @@ export function Gallery({ photos, title }: { photos: Photo[]; title: string }) {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label={`Фотогалерея: ${title}`}
+          aria-label={L("Фотогалерея: {title}", { title })}
           className="fixed inset-0 z-[1200] flex flex-col bg-black/95 text-white"
           onTouchStart={(e) => setTouchX(e.touches[0].clientX)}
           onTouchEnd={(e) => {
@@ -67,7 +69,7 @@ export function Gallery({ photos, title }: { photos: Photo[]; title: string }) {
         >
           <div className="flex items-center justify-between px-5 py-4 text-sm">
             <span>{open + 1} / {photos.length}</span>
-            <button type="button" onClick={close} aria-label="Закрыть" className="grid h-10 w-10 place-items-center hover:text-sky">
+            <button type="button" onClick={close} aria-label={L("Закрыть")} className="grid h-10 w-10 place-items-center hover:text-sky">
               <X size={24} />
             </button>
           </div>
@@ -75,10 +77,10 @@ export function Gallery({ photos, title }: { photos: Photo[]; title: string }) {
             <Image src={photos[open].url} alt={photos[open].alt || title} fill sizes="100vw" className="object-contain" />
             {photos.length > 1 && (
               <>
-                <button type="button" onClick={() => step(-1)} aria-label="Предыдущее фото" className="absolute top-1/2 left-3 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/10 hover:bg-white/25">
+                <button type="button" onClick={() => step(-1)} aria-label={L("Предыдущее фото")} className="absolute top-1/2 left-3 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/10 hover:bg-white/25">
                   <ChevronLeft />
                 </button>
-                <button type="button" onClick={() => step(1)} aria-label="Следующее фото" className="absolute top-1/2 right-3 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/10 hover:bg-white/25">
+                <button type="button" onClick={() => step(1)} aria-label={L("Следующее фото")} className="absolute top-1/2 right-3 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/10 hover:bg-white/25">
                   <ChevronRight />
                 </button>
               </>

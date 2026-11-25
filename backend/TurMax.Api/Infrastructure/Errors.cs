@@ -24,7 +24,7 @@ public class AppExceptionFilter : Microsoft.AspNetCore.Mvc.Filters.IExceptionFil
     public void OnException(Microsoft.AspNetCore.Mvc.Filters.ExceptionContext context)
     {
         if (context.Exception is not AppException ex) return;
-        context.Result = new ObjectResult(ErrorHandling.Create(ex.StatusCode, ex.Message)) { StatusCode = ex.StatusCode };
+        context.Result = new ObjectResult(ErrorHandling.Create(ex.StatusCode, Messages.T(ex.Message, Langs.Of(context.HttpContext)))) { StatusCode = ex.StatusCode };
         context.ExceptionHandled = true;
     }
 }
@@ -55,7 +55,7 @@ public static class ErrorHandling
                 ctx.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger("Errors").LogError(ex, "Unhandled error");
             ctx.Response.StatusCode = code;
             ctx.Response.ContentType = "application/json";
-            await ctx.Response.WriteAsync(JsonSerializer.Serialize(Create(code, msg), JsonOptions));
+            await ctx.Response.WriteAsync(JsonSerializer.Serialize(Create(code, Messages.T(msg, Langs.Of(ctx))), JsonOptions));
         }));
 
         app.UseStatusCodePages(async sc =>
@@ -71,7 +71,7 @@ public static class ErrorHandling
                 _ => "Ошибка запроса"
             };
             r.ContentType = "application/json";
-            await r.WriteAsync(JsonSerializer.Serialize(Create(r.StatusCode, msg), JsonOptions));
+            await r.WriteAsync(JsonSerializer.Serialize(Create(r.StatusCode, Messages.T(msg, Langs.Of(sc.HttpContext))), JsonOptions));
         });
     }
 
@@ -83,10 +83,11 @@ public static class ErrorHandling
     /// <summary>Ответ на ошибки валидации DTO в том же формате.</summary>
     public static IActionResult InvalidModel(ActionContext ctx)
     {
+        var lang = Langs.Of(ctx.HttpContext);
         var details = ctx.ModelState.Where(kv => kv.Value?.Errors.Count > 0)
             .ToDictionary(kv => JsonNamingPolicy.CamelCase.ConvertName(kv.Key),
-                          kv => kv.Value!.Errors.Select(e => string.IsNullOrEmpty(e.ErrorMessage) ? "Неверное значение" : e.ErrorMessage).ToArray());
-        var first = details.Values.SelectMany(v => v).FirstOrDefault() ?? "Ошибка валидации";
+                          kv => kv.Value!.Errors.Select(e => Messages.T(string.IsNullOrEmpty(e.ErrorMessage) ? "Неверное значение" : e.ErrorMessage, lang)).ToArray());
+        var first = details.Values.SelectMany(v => v).FirstOrDefault() ?? Messages.T("Ошибка валидации", lang);
         return new BadRequestObjectResult(Create(400, first, details));
     }
 }
